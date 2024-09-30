@@ -1,8 +1,8 @@
-import a from "./vue3-histogram-slider.esm22.js";
-function r(t) {
-  return Math.max(1, Math.ceil(Math.log(a(t)) / Math.LN2) + 1);
+function t() {
+  var a = arguments[0];
+  return arguments[0] = this, a.apply(null, arguments), this;
 }
 export {
-  r as default
+  t as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm29.js.map

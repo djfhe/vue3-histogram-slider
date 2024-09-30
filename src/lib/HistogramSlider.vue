@@ -17,18 +17,20 @@
       :tooltip="'always'"
       :tooltip-placement="['bottom']"
       :tooltip-formatter="prettify"
-      @change="onChange"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
-import * as d3 from 'd3'
-import VueSlider, { type MarkOption, type Marks, type Styles } from 'vue-slider-component'
-import 'vue-slider-component/theme/antd.css'
+import { min, max, bin  } from 'd3-array'
+import type { Bin } from 'd3-array'
+import { scaleLinear } from 'd3-scale'
+import { select } from 'd3-selection'
+import type { Selection } from 'd3-selection'
+import VueSlider, { type MarkOption, type Marks, type Styles } from 'vue-3-slider-component'
 
-export type MarkStyle = Omit<MarkOption, 'label'>
+type MarkStyle = Omit<MarkOption, 'label'>
 
 interface Props {
   data: number[]
@@ -99,8 +101,8 @@ const sliderValue = computed({
   set: (value: number) => (modelValue.value = value),
 })
 
-const minValue = computed(() => props.min ?? d3.min(props.data) ?? 0)
-const maxValue = computed(() => props.max ?? d3.max(props.data) ?? 100)
+const minValue = computed(() => props.min ?? min(props.data) ?? 0)
+const maxValue = computed(() => props.max ?? max(props.data) ?? 100)
 
 const svgWidth = ref(0)
 const svgHeight = ref(0)
@@ -122,34 +124,30 @@ const marks = computed<Marks | undefined>(() => {
   return undefined
 })
 
-let hist: d3.Selection<SVGGElement, unknown, null, undefined> | null = null
+let hist: Selection<SVGGElement, unknown, null, undefined> | null = null
 
 const colorScale = computed<(value: number) => string>(() => {
   if (props.colors.length > 0) {
-    return d3
-      .scaleLinear<string>()
+    return scaleLinear<string>()
       .domain([minValue.value, maxValue.value])
       .range(props.colors) satisfies (value: number) => string
   }
 
-  return d3
-      .scaleLinear<string>()
+  return scaleLinear<string>()
       .domain([minValue.value, maxValue.value])
       .range(['#4facfe', '#00f2fe']) satisfies (value: number) => string
 })
 
 const xScale = computed(() => {
   const width = svgWidth.value
-  return d3
-    .scaleLinear()
+  return scaleLinear()
     .domain([minValue.value, maxValue.value])
     .range([0, width])
     .clamp(true)
 })
 
 const histogramData = computed(() => {
-  const binsGenerator = d3
-    .bin()
+  const binsGenerator = bin()
     .domain(xScale.value.domain() as [number, number])
     .thresholds(Math.floor(svgWidth.value / (props.barWidth + props.barGap)))
 
@@ -158,9 +156,8 @@ const histogramData = computed(() => {
 
 const yScale = computed(() => {
   const height = svgHeight.value
-  const maxCount = d3.max(histogramData.value, (d) => d.length) ?? 0
-  return d3
-    .scaleLinear()
+  const maxCount = max(histogramData.value, (d) => d.length) ?? 0
+  return scaleLinear()
     .range([height, 0])
     .domain([0, maxCount])
 })
@@ -173,7 +170,7 @@ function renderHistogram() {
   svgHeight.value = svgElementRef.value.clientHeight
 
   // Remove previous content
-  const svg = d3.select(svgElementRef.value)
+  const svg = select(svgElementRef.value)
   svg.selectAll('*').remove()
 
   hist = svg.append('g').attr('class', 'histogram')
@@ -196,17 +193,15 @@ function updateHistogram() {
 
   hist
     .selectAll('rect')
-    .attr('fill', (d) => getBarColor((d as d3.Bin<number, number>).x0!))
+    .attr('fill', (d) => getBarColor((d as Bin<number, number>).x0!))
 }
+
+watch(modelValue, () => {
+  updateHistogram()
+})
 
 function getBarColor(binValue: number): string {
   return binValue < sliderValue.value ? colorScale.value(binValue) : props.holderColor
-}
-
-function onChange(value: number) {
-  if (props.updateColorOnChange) {
-    updateHistogram()
-  }
 }
 
 onMounted(async () => {
@@ -267,7 +262,6 @@ const histSliderGapOffset= computed(() => {
 .vue-histogram-slider-wrapper {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
 .vue-histogram {

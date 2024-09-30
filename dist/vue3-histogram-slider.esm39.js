@@ -1,13 +1,19 @@
-import r from "./vue3-histogram-slider.esm34.js";
-function u(o, e) {
-  var n = {}, f = {}, t;
-  (o === null || typeof o != "object") && (o = {}), (e === null || typeof e != "object") && (e = {});
-  for (t in e)
-    t in o ? n[t] = r(o[t], e[t]) : f[t] = e[t];
-  return function(i) {
-    for (t in n) f[t] = n[t](i);
-    return f;
+function e() {
+  this.textContent = "";
+}
+function o(t) {
+  return function() {
+    this.textContent = t;
   };
+}
+function i(t) {
+  return function() {
+    var n = t.apply(this, arguments);
+    this.textContent = n ?? "";
+  };
+}
+function u(t) {
+  return arguments.length ? this.each(t == null ? e : (typeof t == "function" ? i : o)(t)) : this.node().textContent;
 }
 export {
   u as default

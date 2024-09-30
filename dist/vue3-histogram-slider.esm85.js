@@ -1,23 +1,11 @@
-function r(t) {
-  return function() {
-    delete this[t];
+function i(t, h) {
+  return function(f, r) {
+    for (var n = f.length, s = [], u = 0, e = t[0], a = 0; n > 0 && e > 0 && (a + e + 1 > r && (e = Math.max(1, r - a)), s.push(f.substring(n -= e, n + e)), !((a += e + 1) > r)); )
+      e = t[u = (u + 1) % t.length];
+    return s.reverse().join(h);
   };
-}
-function o(t, n) {
-  return function() {
-    this[t] = n;
-  };
-}
-function i(t, n) {
-  return function() {
-    var e = n.apply(this, arguments);
-    e == null ? delete this[t] : this[t] = e;
-  };
-}
-function u(t, n) {
-  return arguments.length > 1 ? this.each((n == null ? r : typeof n == "function" ? i : o)(t, n)) : this.node()[t];
 }
 export {
-  u as default
+  i as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm85.js.map

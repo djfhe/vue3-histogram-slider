@@ -1,8 +1,8 @@
-function e(r) {
-  return function(n) {
-    return n.replace(/[0-9]/g, function(t) {
-      return r[+t];
-    });
+function t() {
+}
+function e(n) {
+  return n == null ? t : function() {
+    return this.querySelector(n);
   };
 }
 export {

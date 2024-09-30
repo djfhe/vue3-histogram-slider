@@ -1,15 +1,14 @@
-import l from "./vue3-histogram-slider.esm60.js";
-import u from "./vue3-histogram-slider.esm99.js";
-function i() {
-  return null;
-}
-function c(n, t) {
-  var r = typeof n == "function" ? n : l(n), e = t == null ? i : typeof t == "function" ? t : u(t);
-  return this.select(function() {
-    return this.insertBefore(r.apply(this, arguments), e.apply(this, arguments) || null);
-  });
+import c from "./vue3-histogram-slider.esm81.js";
+function g(e, n) {
+  var t = n ? n.length : 0, o = e ? Math.min(t, e.length) : 0, f = new Array(o), i = new Array(t), r;
+  for (r = 0; r < o; ++r) f[r] = c(e[r], n[r]);
+  for (; r < t; ++r) i[r] = n[r];
+  return function(a) {
+    for (r = 0; r < o; ++r) i[r] = f[r](a);
+    return i;
+  };
 }
 export {
-  c as default
+  g as genericArray
 };
 //# sourceMappingURL=vue3-histogram-slider.esm92.js.map

@@ -1,21 +1,22 @@
-function i() {
-  this.innerHTML = "";
-}
-function e(n) {
-  return function() {
-    this.innerHTML = n;
-  };
-}
-function o(n) {
-  return function() {
-    var t = n.apply(this, arguments);
-    this.innerHTML = t ?? "";
-  };
-}
-function r(n) {
-  return arguments.length ? this.each(n == null ? i : (typeof n == "function" ? o : e)(n)) : this.node().innerHTML;
-}
+import i from "./vue3-histogram-slider.esm100.js";
+import a from "./vue3-histogram-slider.esm89.js";
+import r from "./vue3-histogram-slider.esm101.js";
+const d = {
+  "%": (o, t) => (o * 100).toFixed(t),
+  b: (o) => Math.round(o).toString(2),
+  c: (o) => o + "",
+  d: i,
+  e: (o, t) => o.toExponential(t),
+  f: (o, t) => o.toFixed(t),
+  g: (o, t) => o.toPrecision(t),
+  o: (o) => Math.round(o).toString(8),
+  p: (o, t) => r(o * 100, t),
+  r,
+  s: a,
+  X: (o) => Math.round(o).toString(16).toUpperCase(),
+  x: (o) => Math.round(o).toString(16)
+};
 export {
-  r as default
+  d as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm88.js.map

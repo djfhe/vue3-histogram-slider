@@ -1,21 +1,8 @@
-import c from "./vue3-histogram-slider.esm61.js";
-import { xhtml as n } from "./vue3-histogram-slider.esm62.js";
-function o(e) {
-  return function() {
-    var t = this.ownerDocument, r = this.namespaceURI;
-    return r === n && t.documentElement.namespaceURI === n ? t.createElement(e) : t.createElementNS(r, e);
-  };
-}
-function a(e) {
-  return function() {
-    return this.ownerDocument.createElementNS(e.space, e.local);
-  };
-}
-function i(e) {
-  var t = c(e);
-  return (t.local ? a : o)(t);
+import a from "./vue3-histogram-slider.esm84.js";
+function t(n, o) {
+  return n = Math.abs(n), o = Math.abs(o) - n, Math.max(0, a(o) - a(n)) + 1;
 }
 export {
-  i as default
+  t as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm60.js.map

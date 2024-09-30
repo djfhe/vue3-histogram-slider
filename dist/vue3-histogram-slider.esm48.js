@@ -1,69 +1,53 @@
-import D from "./vue3-histogram-slider.esm49.js";
-import H from "./vue3-histogram-slider.esm50.js";
-import J from "./vue3-histogram-slider.esm51.js";
-import z from "./vue3-histogram-slider.esm52.js";
-import K from "./vue3-histogram-slider.esm53.js";
-import A from "./vue3-histogram-slider.esm54.js";
-import { prefixExponent as O } from "./vue3-histogram-slider.esm55.js";
-import N from "./vue3-histogram-slider.esm56.js";
-var C = Array.prototype.map, E = ["y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y"];
-function nn(r) {
-  var M = r.grouping === void 0 || r.thousands === void 0 ? N : H(C.call(r.grouping, Number), r.thousands + ""), G = r.currency === void 0 ? "" : r.currency[0] + "", I = r.currency === void 0 ? "" : r.currency[1] + "", L = r.decimal === void 0 ? "." : r.decimal + "", $ = r.numerals === void 0 ? N : J(C.call(r.numerals, String)), j = r.percent === void 0 ? "%" : r.percent + "", F = r.minus === void 0 ? "−" : r.minus + "", X = r.nan === void 0 ? "NaN" : r.nan + "";
-  function w(t) {
-    t = z(t);
-    var a = t.fill, h = t.align, m = t.sign, g = t.symbol, s = t.zero, y = t.width, b = t.comma, d = t.precision, k = t.trim, i = t.type;
-    i === "n" ? (b = !0, i = "g") : A[i] || (d === void 0 && (d = 12), k = !0, i = "g"), (s || a === "0" && h === "=") && (s = !0, a = "0", h = "=");
-    var Z = g === "$" ? G : g === "#" && /[boxX]/.test(i) ? "0" + i.toLowerCase() : "", q = g === "$" ? I : /[%p]/.test(i) ? j : "", S = A[i], B = /[defgprs%]/.test(i);
-    d = d === void 0 ? 6 : /[gprs]/.test(i) ? Math.max(1, Math.min(21, d)) : Math.max(0, Math.min(20, d));
-    function P(n) {
-      var e = Z, f = q, p, T, u;
-      if (i === "c")
-        f = S(n) + f, n = "";
-      else {
-        n = +n;
-        var x = n < 0 || 1 / n < 0;
-        if (n = isNaN(n) ? X : S(Math.abs(n), d), k && (n = K(n)), x && +n == 0 && m !== "+" && (x = !1), e = (x ? m === "(" ? m : F : m === "-" || m === "(" ? "" : m) + e, f = (i === "s" ? E[8 + O / 3] : "") + f + (x && m === "(" ? ")" : ""), B) {
-          for (p = -1, T = n.length; ++p < T; )
-            if (u = n.charCodeAt(p), 48 > u || u > 57) {
-              f = (u === 46 ? L + n.slice(p + 1) : n.slice(p)) + f, n = n.slice(0, p);
-              break;
-            }
-        }
-      }
-      b && !s && (n = M(n, 1 / 0));
-      var c = e.length + n.length + f.length, o = c < y ? new Array(y - c + 1).join(a) : "";
-      switch (b && s && (n = M(o + n, o.length ? y - f.length : 1 / 0), o = ""), h) {
-        case "<":
-          n = e + n + f + o;
-          break;
-        case "=":
-          n = e + o + n + f;
-          break;
-        case "^":
-          n = o.slice(0, c = o.length >> 1) + e + n + f + o.slice(c);
-          break;
-        default:
-          n = o + e + n + f;
-          break;
-      }
-      return $(n);
-    }
-    return P.toString = function() {
-      return t + "";
-    }, P;
-  }
-  function Y(t, a) {
-    var h = w((t = z(t), t.type = "f", t)), m = Math.max(-8, Math.min(8, Math.floor(D(a) / 3))) * 3, g = Math.pow(10, -m), s = E[8 + m / 3];
-    return function(y) {
-      return h(g * y) + s;
-    };
-  }
-  return {
-    format: w,
-    formatPrefix: Y
+function h(i) {
+  return function(t) {
+    i.call(this, t, this.__data__);
   };
 }
+function p(i) {
+  return i.trim().split(/^|\s+/).map(function(t) {
+    var s = "", n = t.indexOf(".");
+    return n >= 0 && (s = t.slice(n + 1), t = t.slice(0, n)), { type: t, name: s };
+  });
+}
+function c(i) {
+  return function() {
+    var t = this.__on;
+    if (t) {
+      for (var s = 0, n = -1, e = t.length, r; s < e; ++s)
+        r = t[s], (!i.type || r.type === i.type) && r.name === i.name ? this.removeEventListener(r.type, r.listener, r.options) : t[++n] = r;
+      ++n ? t.length = n : delete this.__on;
+    }
+  };
+}
+function v(i, t, s) {
+  return function() {
+    var n = this.__on, e, r = h(t);
+    if (n) {
+      for (var a = 0, f = n.length; a < f; ++a)
+        if ((e = n[a]).type === i.type && e.name === i.name) {
+          this.removeEventListener(e.type, e.listener, e.options), this.addEventListener(e.type, e.listener = r, e.options = s), e.value = t;
+          return;
+        }
+    }
+    this.addEventListener(i.type, r, s), e = { type: i.type, name: i.name, value: t, listener: r, options: s }, n ? n.push(e) : this.__on = [e];
+  };
+}
+function _(i, t, s) {
+  var n = p(i + ""), e, r = n.length, a;
+  if (arguments.length < 2) {
+    var f = this.node().__on;
+    if (f) {
+      for (var l = 0, u = f.length, o; l < u; ++l)
+        for (e = 0, o = f[l]; e < r; ++e)
+          if ((a = n[e]).type === o.type && a.name === o.name)
+            return o.value;
+    }
+    return;
+  }
+  for (f = t ? v : c, e = 0; e < r; ++e) this.each(f(n[e], t, s));
+  return this;
+}
 export {
-  nn as default
+  _ as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm48.js.map

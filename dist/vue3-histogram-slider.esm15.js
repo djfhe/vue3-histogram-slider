@@ -1,9 +1,15 @@
-var o = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
-function l(e) {
-  return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
+function r(t) {
+  return function() {
+    return this.matches(t);
+  };
+}
+function e(t) {
+  return function(n) {
+    return n.matches(t);
+  };
 }
 export {
-  o as commonjsGlobal,
-  l as getDefaultExportFromCjs
+  e as childMatcher,
+  r as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm15.js.map

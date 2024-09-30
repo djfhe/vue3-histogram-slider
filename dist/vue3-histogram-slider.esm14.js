@@ -1,8 +1,13 @@
-import { Selection as t, root as n } from "./vue3-histogram-slider.esm64.js";
-function r(e) {
-  return typeof e == "string" ? new t([[document.querySelector(e)]], [document.documentElement]) : new t([[e]], n);
-}
+var w = "http://www.w3.org/1999/xhtml";
+const t = {
+  svg: "http://www.w3.org/2000/svg",
+  xhtml: w,
+  xlink: "http://www.w3.org/1999/xlink",
+  xml: "http://www.w3.org/XML/1998/namespace",
+  xmlns: "http://www.w3.org/2000/xmlns/"
+};
 export {
-  r as default
+  t as default,
+  w as xhtml
 };
 //# sourceMappingURL=vue3-histogram-slider.esm14.js.map

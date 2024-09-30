@@ -17,13 +17,15 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/lib/index.ts'),
-      name: '',
+      name: 'vue3-histogram-slider',
     },
     rollupOptions: {
+      treeshake: true,
       plugins: [],
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: ['vue'],
+      
       output: [
         {
           preserveModules: true,

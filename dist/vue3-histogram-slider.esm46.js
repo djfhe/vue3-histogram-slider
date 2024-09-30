@@ -1,25 +1,15 @@
-import o from "./vue3-histogram-slider.esm41.js";
-function e(n, r) {
-  return function(t) {
-    return n + t * r;
-  };
+function t() {
+  var e = this.cloneNode(!1), n = this.parentNode;
+  return n ? n.insertBefore(e, this.nextSibling) : e;
 }
-function i(n, r, t) {
-  return n = Math.pow(n, t), r = Math.pow(r, t) - n, t = 1 / t, function(u) {
-    return Math.pow(n + u * r, t);
-  };
+function o() {
+  var e = this.cloneNode(!0), n = this.parentNode;
+  return n ? n.insertBefore(e, this.nextSibling) : e;
 }
-function a(n) {
-  return (n = +n) == 1 ? f : function(r, t) {
-    return t - r ? i(r, t, n) : o(isNaN(r) ? t : r);
-  };
-}
-function f(n, r) {
-  var t = r - n;
-  return t ? e(n, t) : o(isNaN(n) ? r : n);
+function i(e) {
+  return this.select(e ? o : t);
 }
 export {
-  f as default,
-  a as gamma
+  i as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm46.js.map

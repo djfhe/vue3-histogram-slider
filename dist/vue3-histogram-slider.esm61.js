@@ -1,9 +1,8 @@
-import i from "./vue3-histogram-slider.esm62.js";
-function p(r) {
-  var s = r += "", e = s.indexOf(":");
-  return e >= 0 && (s = r.slice(0, e)) !== "xmlns" && (r = r.slice(e + 1)), i.hasOwnProperty(s) ? { space: i[s], local: r } : r;
+import t from "./vue3-histogram-slider.esm84.js";
+function e(a, o) {
+  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(t(o) / 3))) * 3 - t(Math.abs(a)));
 }
 export {
-  p as default
+  e as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm61.js.map

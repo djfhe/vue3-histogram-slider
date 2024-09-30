@@ -1,25 +1,21 @@
-import g from "./vue3-histogram-slider.esm38.js";
-var x = /[-+]?(?:\d+\.?\d*|\.?\d+)(?:[eE][-+]?\d+)?/g, c = new RegExp(x.source, "g");
-function p(i) {
+function i() {
+  this.innerHTML = "";
+}
+function e(n) {
   return function() {
-    return i;
+    this.innerHTML = n;
   };
 }
-function h(i) {
-  return function(n) {
-    return i(n) + "";
+function o(n) {
+  return function() {
+    var t = n.apply(this, arguments);
+    this.innerHTML = t ?? "";
   };
 }
-function v(i, n) {
-  var u = x.lastIndex = c.lastIndex = 0, o, l, t, r = -1, e = [], f = [];
-  for (i = i + "", n = n + ""; (o = x.exec(i)) && (l = c.exec(n)); )
-    (t = l.index) > u && (t = n.slice(u, t), e[r] ? e[r] += t : e[++r] = t), (o = o[0]) === (l = l[0]) ? e[r] ? e[r] += l : e[++r] = l : (e[++r] = null, f.push({ i: r, x: g(o, l) })), u = c.lastIndex;
-  return u < n.length && (t = n.slice(u), e[r] ? e[r] += t : e[++r] = t), e.length < 2 ? f[0] ? h(f[0].x) : p(n) : (n = f.length, function(d) {
-    for (var s = 0, a; s < n; ++s) e[(a = f[s]).i] = a.x(d);
-    return e.join("");
-  });
+function r(n) {
+  return arguments.length ? this.each(n == null ? i : (typeof n == "function" ? o : e)(n)) : this.node().innerHTML;
 }
 export {
-  v as default
+  r as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm40.js.map

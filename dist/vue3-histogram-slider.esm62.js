@@ -1,13 +1,16 @@
-var w = "http://www.w3.org/1999/xhtml";
-const t = {
-  svg: "http://www.w3.org/2000/svg",
-  xhtml: w,
-  xlink: "http://www.w3.org/1999/xlink",
-  xml: "http://www.w3.org/XML/1998/namespace",
-  xmlns: "http://www.w3.org/2000/xmlns/"
-};
+import o from "./vue3-histogram-slider.esm83.js";
+var r, t, f;
+e({
+  thousands: ",",
+  grouping: [3],
+  currency: ["$", ""]
+});
+function e(a) {
+  return r = o(a), t = r.format, f = r.formatPrefix, r;
+}
 export {
-  t as default,
-  w as xhtml
+  e as default,
+  t as format,
+  f as formatPrefix
 };
 //# sourceMappingURL=vue3-histogram-slider.esm62.js.map

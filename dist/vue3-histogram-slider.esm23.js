@@ -1,16 +1,28 @@
-function d(l, t) {
-  let f, n;
-  if (t === void 0)
-    for (const e of l)
-      e != null && (f === void 0 ? e >= e && (f = n = e) : (f > e && (f = e), n < e && (n = e)));
-  else {
-    let e = -1;
-    for (let i of l)
-      (i = t(i, ++e, l)) != null && (f === void 0 ? i >= i && (f = n = i) : (f > i && (f = i), n < i && (n = i)));
-  }
-  return [f, n];
+import n from "./vue3-histogram-slider.esm77.js";
+import { Selection as o } from "./vue3-histogram-slider.esm16.js";
+function u() {
+  return new o(this._enter || this._groups.map(n), this._parents);
 }
+function r(e, t) {
+  this.ownerDocument = e.ownerDocument, this.namespaceURI = e.namespaceURI, this._next = null, this._parent = e, this.__data__ = t;
+}
+r.prototype = {
+  constructor: r,
+  appendChild: function(e) {
+    return this._parent.insertBefore(e, this._next);
+  },
+  insertBefore: function(e, t) {
+    return this._parent.insertBefore(e, t);
+  },
+  querySelector: function(e) {
+    return this._parent.querySelector(e);
+  },
+  querySelectorAll: function(e) {
+    return this._parent.querySelectorAll(e);
+  }
+};
 export {
-  d as default
+  r as EnterNode,
+  u as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm23.js.map

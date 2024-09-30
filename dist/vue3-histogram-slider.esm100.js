@@ -1,12 +1,16 @@
-function n() {
-  return [];
+function a(e) {
+  return Math.abs(e = Math.round(e)) >= 1e21 ? e.toLocaleString("en").replace(/,/g, "") : e.toString(10);
 }
-function e(t) {
-  return t == null ? n : function() {
-    return this.querySelectorAll(t);
-  };
+function r(e, i) {
+  if ((n = (e = i ? e.toExponential(i - 1) : e.toExponential()).indexOf("e")) < 0) return null;
+  var n, t = e.slice(0, n);
+  return [
+    t.length > 1 ? t[0] + t.slice(2) : t,
+    +e.slice(n + 1)
+  ];
 }
 export {
-  e as default
+  a as default,
+  r as formatDecimalParts
 };
 //# sourceMappingURL=vue3-histogram-slider.esm100.js.map

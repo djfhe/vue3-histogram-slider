@@ -1,10 +1,7 @@
-function e() {
-  this.previousSibling && this.parentNode.insertBefore(this, this.parentNode.firstChild);
-}
-function i() {
-  return this.each(e);
+function e(t) {
+  return t;
 }
 export {
-  i as default
+  e as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm90.js.map

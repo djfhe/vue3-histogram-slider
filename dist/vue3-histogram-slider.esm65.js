@@ -1,13 +1,38 @@
-import { Selection as o } from "./vue3-histogram-slider.esm64.js";
-import m from "./vue3-histogram-slider.esm99.js";
-function p(a) {
-  typeof a != "function" && (a = m(a));
-  for (var n = this._groups, e = n.length, l = new Array(e), r = 0; r < e; ++r)
-    for (var f = n[r], c = f.length, h = l[r] = new Array(c), _, i, t = 0; t < c; ++t)
-      (_ = f[t]) && (i = a.call(_, _.__data__, t, f)) && ("__data__" in _ && (i.__data__ = _.__data__), h[t] = i);
-  return new o(l, this._parents);
+import d from "./vue3-histogram-slider.esm64.js";
+import p from "./vue3-histogram-slider.esm67.js";
+function b(c) {
+  let u, o, s;
+  c.length !== 2 ? (u = d, o = (n, e) => d(c(n), e), s = (n, e) => c(n) - e) : (u = c === d || c === p ? c : l, o = c, s = c);
+  function f(n, e, t = 0, r = n.length) {
+    if (t < r) {
+      if (u(e, e) !== 0) return r;
+      do {
+        const i = t + r >>> 1;
+        o(n[i], e) < 0 ? t = i + 1 : r = i;
+      } while (t < r);
+    }
+    return t;
+  }
+  function m(n, e, t = 0, r = n.length) {
+    if (t < r) {
+      if (u(e, e) !== 0) return r;
+      do {
+        const i = t + r >>> 1;
+        o(n[i], e) <= 0 ? t = i + 1 : r = i;
+      } while (t < r);
+    }
+    return t;
+  }
+  function g(n, e, t = 0, r = n.length) {
+    const i = f(n, e, t, r - 1);
+    return i > t && s(n[i - 1], e) > -s(n[i], e) ? i - 1 : i;
+  }
+  return { left: f, center: g, right: m };
+}
+function l() {
+  return 0;
 }
 export {
-  p as default
+  b as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm65.js.map

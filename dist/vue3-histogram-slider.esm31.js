@@ -1,13 +1,12 @@
-function p(e, r, t) {
-  e.prototype = r.prototype = t, t.constructor = e;
-}
-function n(e, r) {
-  var t = Object.create(e.prototype);
-  for (var o in r) t[o] = r[o];
-  return t;
+function o() {
+  for (var e = this._groups, r = 0, a = e.length; r < a; ++r)
+    for (var n = e[r], t = 0, f = n.length; t < f; ++t) {
+      var l = n[t];
+      if (l) return l;
+    }
+  return null;
 }
 export {
-  p as default,
-  n as extend
+  o as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm31.js.map

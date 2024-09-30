@@ -1,6 +1,6 @@
-import { MarkOption, Styles } from 'vue-slider-component';
+import { MarkOption, Styles } from 'vue-3-slider-component';
 import { DefineComponent, ComponentOptionsMixin, PublicProps, ComponentProvideOptions } from 'vue';
-export type MarkStyle = Omit<MarkOption, 'label'>;
+type MarkStyle = Omit<MarkOption, 'label'>;
 interface Props {
     data: number[];
     min?: number;
@@ -31,9 +31,7 @@ declare const _default: DefineComponent<__VLS_PublicProps, {}, {}, {}, {}, Compo
 }, string, PublicProps, Readonly<__VLS_PublicProps> & Readonly<{
     "onUpdate:modelValue"?: ((modelValue: number) => any) | undefined;
 }>, {
-    tooltipStyle: Styles;
     labelStyle: Styles;
-    processStyle: Styles;
     step: number;
     barWidth: number;
     barGap: number;
@@ -46,6 +44,8 @@ declare const _default: DefineComponent<__VLS_PublicProps, {}, {}, {}, {}, Compo
     gridNum: number;
     prettify: (value: number) => string;
     markStyle: MarkStyle;
+    processStyle: Styles;
+    tooltipStyle: Styles;
     histSliderGap: number;
 }, {}, {}, {}, string, ComponentProvideOptions, false, {}, any>;
 export default _default;

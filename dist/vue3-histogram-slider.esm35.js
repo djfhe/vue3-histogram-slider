@@ -1,16 +1,45 @@
-import y, { gamma as e } from "./vue3-histogram-slider.esm46.js";
-import { rgb as c } from "./vue3-histogram-slider.esm30.js";
-const x = function a(b) {
-  var g = e(b);
-  function i(o, r) {
-    var n = g((o = c(o)).r, (r = c(r)).r), p = g(o.g, r.g), u = g(o.b, r.b), f = y(o.opacity, r.opacity);
-    return function(m) {
-      return o.r = n(m), o.g = p(m), o.b = u(m), o.opacity = f(m), o + "";
-    };
+import i from "./vue3-histogram-slider.esm13.js";
+function o(t) {
+  return function() {
+    this.removeAttribute(t);
+  };
+}
+function u(t) {
+  return function() {
+    this.removeAttributeNS(t.space, t.local);
+  };
+}
+function c(t, n) {
+  return function() {
+    this.setAttribute(t, n);
+  };
+}
+function s(t, n) {
+  return function() {
+    this.setAttributeNS(t.space, t.local, n);
+  };
+}
+function a(t, n) {
+  return function() {
+    var e = n.apply(this, arguments);
+    e == null ? this.removeAttribute(t) : this.setAttribute(t, e);
+  };
+}
+function l(t, n) {
+  return function() {
+    var e = n.apply(this, arguments);
+    e == null ? this.removeAttributeNS(t.space, t.local) : this.setAttributeNS(t.space, t.local, e);
+  };
+}
+function h(t, n) {
+  var e = i(t);
+  if (arguments.length < 2) {
+    var r = this.node();
+    return e.local ? r.getAttributeNS(e.space, e.local) : r.getAttribute(e);
   }
-  return i.gamma = a, i;
-}(1);
+  return this.each((n == null ? e.local ? u : o : typeof n == "function" ? e.local ? l : a : e.local ? s : c)(e, n));
+}
 export {
-  x as default
+  h as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm35.js.map

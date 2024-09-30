@@ -1,16 +1,8 @@
-function l(d, i) {
-  let e;
-  if (i === void 0)
-    for (const n of d)
-      n != null && (e < n || e === void 0 && n >= n) && (e = n);
-  else {
-    let n = -1;
-    for (let f of d)
-      (f = i(f, ++n, d)) != null && (e < f || e === void 0 && f >= f) && (e = f);
-  }
-  return e;
+import { Selection as t, root as n } from "./vue3-histogram-slider.esm16.js";
+function r(e) {
+  return typeof e == "string" ? new t([[document.querySelector(e)]], [document.documentElement]) : new t([[e]], n);
 }
 export {
-  l as default
+  r as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm11.js.map

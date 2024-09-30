@@ -1,13 +1,16 @@
-import { Selection as s } from "./vue3-histogram-slider.esm64.js";
-import c from "./vue3-histogram-slider.esm63.js";
-function v(t) {
-  typeof t != "function" && (t = c(t));
-  for (var i = this._groups, l = i.length, a = new Array(l), r = 0; r < l; ++r)
-    for (var n = i[r], _ = n.length, o = a[r] = [], e, f = 0; f < _; ++f)
-      (e = n[f]) && t.call(e, e.__data__, f, n) && o.push(e);
-  return new s(a, this._parents);
+function d(l, t) {
+  let f, n;
+  if (t === void 0)
+    for (const e of l)
+      e != null && (f === void 0 ? e >= e && (f = n = e) : (f > e && (f = e), n < e && (n = e)));
+  else {
+    let e = -1;
+    for (let i of l)
+      (i = t(i, ++e, l)) != null && (f === void 0 ? i >= i && (f = n = i) : (f > i && (f = i), n < i && (n = i)));
+  }
+  return [f, n];
 }
 export {
-  v as default
+  d as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm69.js.map

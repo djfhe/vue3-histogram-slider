@@ -1,15 +1,10 @@
-function r(t) {
-  return function() {
-    return this.matches(t);
-  };
-}
-function e(t) {
-  return function(n) {
-    return n.matches(t);
-  };
-}
+import r from "./vue3-histogram-slider.esm64.js";
+import t from "./vue3-histogram-slider.esm65.js";
+import e from "./vue3-histogram-slider.esm66.js";
+const i = t(r), s = i.right;
+t(e).center;
 export {
-  e as childMatcher,
-  r as default
+  s as bisectRight,
+  s as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm63.js.map

@@ -1,14 +1,11 @@
-import { defineComponent as O, mergeModels as F, useCssVars as E, ref as y, useModel as N, computed as o, onMounted as w, nextTick as U, watch as G, onBeforeUnmount as q, openBlock as M, createElementBlock as W, createVNode as D, unref as T } from "vue";
-import "./vue3-histogram-slider.esm6.js";
-import "./vue3-histogram-slider.esm7.js";
-import _ from "./vue3-histogram-slider.esm8.js";
-/* empty css                           */
+import { defineComponent as R, mergeModels as F, useCssVars as O, ref as y, useModel as E, computed as r, watch as b, onMounted as G, nextTick as N, onBeforeUnmount as U, openBlock as M, createElementBlock as W, createVNode as q, unref as D } from "vue";
+import T from "./vue3-histogram-slider.esm6.js";
+import _ from "./vue3-histogram-slider.esm7.js";
+import A from "./vue3-histogram-slider.esm8.js";
+import p from "./vue3-histogram-slider.esm9.js";
 import $ from "./vue3-histogram-slider.esm10.js";
-import A from "./vue3-histogram-slider.esm11.js";
-import v from "./vue3-histogram-slider.esm12.js";
-import j from "./vue3-histogram-slider.esm13.js";
-import I from "./vue3-histogram-slider.esm14.js";
-const J = { class: "vue-histogram-slider-wrapper" }, le = /* @__PURE__ */ O({
+import j from "./vue3-histogram-slider.esm11.js";
+const I = { class: "vue-histogram-slider-wrapper" }, Z = /* @__PURE__ */ R({
   __name: "HistogramSlider",
   props: /* @__PURE__ */ F({
     data: {},
@@ -56,53 +53,53 @@ const J = { class: "vue-histogram-slider-wrapper" }, le = /* @__PURE__ */ O({
   }),
   emits: ["update:modelValue"],
   setup(d) {
-    E((e) => ({
-      "2217ac24": R.value
+    O((e) => ({
+      "442aa41f": B.value
     }));
-    const t = d, l = y(null), p = N(d, "modelValue"), f = o({
-      get: () => Math.max(r.value, Math.min(i.value, p.value)),
-      set: (e) => p.value = e
-    }), r = o(() => t.min ?? $(t.data) ?? 0), i = o(() => t.max ?? A(t.data) ?? 100), n = y(0), s = y(0), H = o(() => {
+    const t = d, l = y(null), f = E(d, "modelValue"), m = r({
+      get: () => Math.max(o.value, Math.min(u.value, f.value)),
+      set: (e) => f.value = e
+    }), o = r(() => t.min ?? _(t.data) ?? 0), u = r(() => t.max ?? A(t.data) ?? 100), i = y(0), s = y(0), H = r(() => {
       if (t.grid) {
-        const e = t.gridNum, a = (i.value - r.value) / e, u = {};
+        const e = t.gridNum, a = (u.value - o.value) / e, n = {};
         for (let g = 0; g <= e; g++) {
-          const z = r.value + a * g;
-          u[Math.round(z)] = {
+          const w = o.value + a * g;
+          n[Math.round(w)] = {
             ...t.markStyle,
-            label: t.prettify(z)
+            label: t.prettify(w)
           };
         }
-        return u;
+        return n;
       }
     });
-    let m = null;
-    const b = o(() => t.colors.length > 0 ? v().domain([r.value, i.value]).range(t.colors) : v().domain([r.value, i.value]).range(["#4facfe", "#00f2fe"])), S = o(() => {
-      const e = n.value;
-      return v().domain([r.value, i.value]).range([0, e]).clamp(!0);
-    }), x = o(() => j().domain(S.value.domain()).thresholds(Math.floor(n.value / (t.barWidth + t.barGap)))(t.data)), C = o(() => {
-      const e = s.value, a = A(x.value, (u) => u.length) ?? 0;
-      return v().range([e, 0]).domain([0, a]);
+    let c = null;
+    const S = r(() => t.colors.length > 0 ? p().domain([o.value, u.value]).range(t.colors) : p().domain([o.value, u.value]).range(["#4facfe", "#00f2fe"])), x = r(() => {
+      const e = i.value;
+      return p().domain([o.value, u.value]).range([0, e]).clamp(!0);
+    }), k = r(() => $().domain(x.value.domain()).thresholds(Math.floor(i.value / (t.barWidth + t.barGap)))(t.data)), C = r(() => {
+      const e = s.value, a = A(k.value, (n) => n.length) ?? 0;
+      return p().range([e, 0]).domain([0, a]);
     });
     function h() {
       if (!l.value) return;
-      n.value = l.value.clientWidth, s.value = l.value.clientHeight;
-      const e = I(l.value);
-      e.selectAll("*").remove(), m = e.append("g").attr("class", "histogram"), m.selectAll("rect").data(x.value).enter().append("rect").attr("x", (a) => S.value(a.x0)).attr("y", (a) => C.value(a.length)).attr("width", t.barWidth).attr("height", (a) => s.value - C.value(a.length)).attr("rx", t.barRadius).attr("fill", (a) => k(a.x0));
+      i.value = l.value.clientWidth, s.value = l.value.clientHeight;
+      const e = j(l.value);
+      e.selectAll("*").remove(), c = e.append("g").attr("class", "histogram"), c.selectAll("rect").data(k.value).enter().append("rect").attr("x", (a) => x.value(a.x0)).attr("y", (a) => C.value(a.length)).attr("width", t.barWidth).attr("height", (a) => s.value - C.value(a.length)).attr("rx", t.barRadius).attr("fill", (a) => z(a.x0));
     }
     function V() {
-      m && m.selectAll("rect").attr("fill", (e) => k(e.x0));
+      c && c.selectAll("rect").attr("fill", (e) => z(e.x0));
     }
-    function k(e) {
-      return e < f.value ? b.value(e) : t.holderColor;
-    }
-    function B(e) {
-      t.updateColorOnChange && V();
-    }
-    w(async () => {
-      await U(), p.value = r.value, h();
-    }), G(f, () => {
+    b(f, () => {
       V();
-    }), G(
+    });
+    function z(e) {
+      return e < m.value ? S.value(e) : t.holderColor;
+    }
+    G(async () => {
+      await N(), f.value = o.value, h();
+    }), b(m, () => {
+      V();
+    }), b(
       () => [
         t.data,
         t.min,
@@ -112,38 +109,38 @@ const J = { class: "vue-histogram-slider-wrapper" }, le = /* @__PURE__ */ O({
         t.barRadius,
         t.colors,
         t.holderColor,
-        b.value
+        S.value
         // Watch processStyle backgroundColor
       ],
       () => {
         h();
       }
     );
-    let c;
-    w(() => {
-      l.value && (n.value = l.value.clientWidth, s.value = l.value.clientHeight, c = new ResizeObserver(() => {
+    let v;
+    G(() => {
+      l.value && (i.value = l.value.clientWidth, s.value = l.value.clientHeight, v = new ResizeObserver(() => {
         var e, a;
-        n.value = ((e = l.value) == null ? void 0 : e.clientWidth) ?? 0, s.value = ((a = l.value) == null ? void 0 : a.clientHeight) ?? 0, h();
-      }), c.observe(l.value));
-    }), q(() => {
-      c && l.value && c.unobserve(l.value);
+        i.value = ((e = l.value) == null ? void 0 : e.clientWidth) ?? 0, s.value = ((a = l.value) == null ? void 0 : a.clientHeight) ?? 0, h();
+      }), v.observe(l.value));
+    }), U(() => {
+      v && l.value && v.unobserve(l.value);
     });
-    const R = o(() => `${t.histSliderGap}px`);
-    return (e, a) => (M(), W("div", J, [
+    const B = r(() => `${t.histSliderGap}px`);
+    return (e, a) => (M(), W("div", I, [
       (M(), W("svg", {
         ref_key: "svgElementRef",
         ref: l,
         class: "vue-histogram"
       }, null, 512)),
-      D(T(_), {
+      q(D(T), {
         class: "vue-slider",
-        modelValue: f.value,
-        "onUpdate:modelValue": a[0] || (a[0] = (u) => f.value = u),
-        min: r.value,
-        max: i.value,
+        modelValue: m.value,
+        "onUpdate:modelValue": a[0] || (a[0] = (n) => m.value = n),
+        min: o.value,
+        max: u.value,
         step: e.step,
         "dot-size": e.handleSize,
-        width: n.value,
+        width: i.value,
         height: 16,
         marks: H.value,
         lazy: !1,
@@ -151,13 +148,12 @@ const J = { class: "vue-histogram-slider-wrapper" }, le = /* @__PURE__ */ O({
         "tooltip-style": e.tooltipStyle,
         tooltip: "always",
         "tooltip-placement": ["bottom"],
-        "tooltip-formatter": e.prettify,
-        onChange: B
+        "tooltip-formatter": e.prettify
       }, null, 8, ["modelValue", "min", "max", "step", "dot-size", "width", "marks", "process-style", "tooltip-style", "tooltip-formatter"])
     ]));
   }
 });
 export {
-  le as default
+  Z as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm3.js.map

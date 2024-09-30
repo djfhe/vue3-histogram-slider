@@ -1,14 +1,10 @@
-import { tickIncrement as c } from "./vue3-histogram-slider.esm28.js";
-function r(i, l, n) {
-  let f;
-  for (; ; ) {
-    const e = c(i, l, n);
-    if (e === f || e === 0 || !isFinite(e))
-      return [i, l];
-    e > 0 ? (i = Math.floor(i / e) * e, l = Math.ceil(l / e) * e) : e < 0 && (i = Math.ceil(i * e) / e, l = Math.floor(l * e) / e), f = e;
-  }
+function s() {
+  for (var i = this._groups, o = -1, a = i.length; ++o < a; )
+    for (var e = i[o], f = e.length - 1, r = e[f], t; --f >= 0; )
+      (t = e[f]) && (r && t.compareDocumentPosition(r) ^ 4 && r.parentNode.insertBefore(t, r), r = t);
+  return this;
 }
 export {
-  r as default
+  s as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm27.js.map

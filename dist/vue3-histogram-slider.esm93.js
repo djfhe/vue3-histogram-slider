@@ -1,11 +1,10 @@
-function t() {
-  var e = this.parentNode;
-  e && e.removeChild(this);
-}
-function r() {
-  return this.each(t);
+function u(e, t) {
+  var n = /* @__PURE__ */ new Date();
+  return e = +e, t = +t, function(r) {
+    return n.setTime(e * (1 - r) + t * r), n;
+  };
 }
 export {
-  r as default
+  u as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm93.js.map

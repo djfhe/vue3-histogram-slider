@@ -1,10 +1,13 @@
-import r from "./vue3-histogram-slider.esm18.js";
-import t from "./vue3-histogram-slider.esm19.js";
-import e from "./vue3-histogram-slider.esm20.js";
-const i = t(r), s = i.right;
-t(e).center;
+import { Selection as o } from "./vue3-histogram-slider.esm16.js";
+import m from "./vue3-histogram-slider.esm51.js";
+function p(a) {
+  typeof a != "function" && (a = m(a));
+  for (var n = this._groups, e = n.length, l = new Array(e), r = 0; r < e; ++r)
+    for (var f = n[r], c = f.length, h = l[r] = new Array(c), _, i, t = 0; t < c; ++t)
+      (_ = f[t]) && (i = a.call(_, _.__data__, t, f)) && ("__data__" in _ && (i.__data__ = _.__data__), h[t] = i);
+  return new o(l, this._parents);
+}
 export {
-  s as bisectRight,
-  s as default
+  p as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm17.js.map

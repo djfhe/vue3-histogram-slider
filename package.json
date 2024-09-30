@@ -20,17 +20,21 @@
     "lint:fix": "eslint src/* --fix"
   },
   "dependencies": {
-    "d3": "^7.9.0",
-    "vue-slider-component": "4.1.0-beta.7"
+    "@types/d3-selection": "^3.0.10",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
+    "vue-3-slider-component": "^1.0.1"
   },
   "devDependencies": {
-    "@clickbar/eslint-config": "^10.0.7",
+    "@clickbar/eslint-config": "^10.0.8",
     "@headlessui/vue": "^1.7.23",
     "@tailwindcss/forms": "^0.5.9",
-    "@types/d3": "^7.4.3",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-scale": "^4.0.8",
     "@types/eslint": "^9.6.1",
     "@types/geojson": "^7946.0.14",
-    "@types/node": "^20.16.6",
+    "@types/node": "^20.16.10",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vue/tsconfig": "^0.5.1",
     "autoprefixer": "^10.4.20",
@@ -39,9 +43,12 @@
     "tailwindcss": "^3.4.13",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.6.2",
-    "vite": "^5.4.7",
-    "vite-plugin-dts": "^4.2.2",
-    "vue": "^3.5.8"
+    "vite": "^5.4.8",
+    "vite-plugin-dts": "^4.2.3",
+    "vue": "^3.3.10"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
   },
   "keywords": [
     "vue",
