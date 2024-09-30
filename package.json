@@ -1,8 +1,17 @@
 {
   "name": "vue3-histogram-slider",
-  "version": "0.4.15",
+  "version": "0.4.16",
   "description": "Range slider with histogram for Vue 3",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/vue3-histogram-slider.esm.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "clean": "rm -fdr dist && rm -fdr build",

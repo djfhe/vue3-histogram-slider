@@ -23,10 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount, watchEffect } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
 import * as d3 from 'd3'
-import VueSlider, { type MarkOption, type Styles } from 'vue-slider-component'
+import VueSlider, { type MarkOption, type Marks, type Styles } from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
+
+export type MarkStyle = Omit<MarkOption, 'label'>
 
 interface Props {
   data: number[]
@@ -44,7 +46,7 @@ interface Props {
   gridNum?: number
   prettify?: (value: number) => string
   labelStyle?: Styles
-  markStyle?: Omit<MarkOption, 'label'>
+  markStyle?: MarkStyle
   processStyle?: Styles
   tooltipStyle?: Styles
   histSliderGap?: number 
@@ -103,11 +105,11 @@ const maxValue = computed(() => props.max ?? d3.max(props.data) ?? 100)
 const svgWidth = ref(0)
 const svgHeight = ref(0)
 
-const marks = computed(() => {
+const marks = computed<Marks | undefined>(() => {
   if (props.grid) {
     const count = props.gridNum
     const step = (maxValue.value - minValue.value) / count
-    const result: Record<number, MarkOption> = {}
+    const result: Marks = {}
     for (let i = 0; i <= count; i++) {
       const value = minValue.value + step * i
       result[Math.round(value)] = {
@@ -117,7 +119,7 @@ const marks = computed(() => {
     }
     return result
   }
-  return null
+  return undefined
 })
 
 let hist: d3.Selection<SVGGElement, unknown, null, undefined> | null = null

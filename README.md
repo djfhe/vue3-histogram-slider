@@ -13,25 +13,29 @@
 <hr>
 
 ## 🚀 Quick Start
+
 If you are a try and learn developer, you can start trying the vue3-histogram-slider now using codesandbox.io.
 
 <a href="https://codesandbox.io/s/vue-histogram-slider-b7m0e?fontsize=14" target="_blank">
   <img alt="Edit Vue Histogram Slider" src="https://codesandbox.io/static/img/play-codesandbox.svg">
 </a>
 
-
 <p align="center">
     <img src="https://github.com/phedone/vue3-histogram-slider/raw/master/resources/histogram-slider-demo.gif">
 </p>
 
-## 📦 Installation    
+## 📦 Installation
+
 ### yarn
+
 `yarn add vue3-histogram-slider`
 
 ### npm
+
 `npm i vue3-histogram-slider`
 
 ## 🔧 Usage
+
 ```js
 import HistogramSlider from "vue3-histogram-slider";
 import "vue3-histogram-slider/dist/histogram-slider.css";
@@ -86,12 +90,3 @@ histSliderGap|number|6|Set gap between slider and histogram
 updateColorOnChange|boolean|true|Update histogram bar color on change **(recommended false for performance)**
 clip|boolean|true|Allow dragging a selection to clip graph range
 resettable|boolean|false|Allow zoom reset to a button passed in a slot (with default slot available)
-
-## 🔧 Event
-Name|Description
----|---
-start |Triggers when slider start.
-change|Triggers when each values change.
-update|Triggers when slider is modified by external methods update or reset.
-finish|Triggers when user releases handle.
-
