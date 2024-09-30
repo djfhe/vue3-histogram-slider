@@ -8,27 +8,19 @@
       :prettify="prettify"
       :grid="true"
       :grid-num="2"
-      :colors="['#4facfe', '#00f2fe']"
       v-model="sliderValue1"
-      @finish="finish"
     />
-<!-- 
+
     <HistogramSlider
       v-model="sliderValue2"
-      style="margin: 200px auto"
-      :width="900"
-      :bar-height="110"
+      style="margin: 200px auto; width: 50%; height: 110px;"
       :data="data"
       :prettify="prettify"
       :grid="true"
       :grid-num="2"
       :colors="['#4facfe', '#00f2fe']"
-      @finish="finish"
-      resettable
-      v-slot="{ reset }"
-    >
-      <button @click="reset">Ah</button>
-    </HistogramSlider> -->
+      :hist-slider-gap="-3"
+    />
   </div>
 </template>
 
@@ -47,9 +39,5 @@ function prettify(ts: number): string {
     month: 'short',
     day: 'numeric'
   })
-}
-
-function finish(val: any) {
-  console.log('Slider finished:', val)
 }
 </script>

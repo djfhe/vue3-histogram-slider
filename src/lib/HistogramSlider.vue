@@ -1,8 +1,8 @@
 <template>
   <div class="vue-histogram-slider-wrapper">
-    <svg ref="svgElementRef" class="vue-histogram-view">
-    </svg>
+    <svg ref="svgElementRef" class="vue-histogram"></svg>
     <VueSlider
+      class="vue-slider"
       v-model="sliderValue"
       :min="minValue"
       :max="maxValue"
@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount, watchEffect } from 'vue'
 import * as d3 from 'd3'
-import VueSlider from 'vue-slider-component'
+import VueSlider, { type MarkOption, type Styles } from 'vue-slider-component'
 import 'vue-slider-component/theme/antd.css'
 
 interface Props {
@@ -36,21 +36,18 @@ interface Props {
   barWidth?: number
   barGap?: number
   barRadius?: number
-  labelColor?: string
-  primaryColor?: string
   holderColor?: string
-  handleColor?: string
-  gridTextColor?: string
-  transitionDuration?: number
-  fontFamily?: string
-  fontSize?: number
   colors?: string[]
   updateColorOnChange?: boolean
   handleSize?: number
   grid?: boolean
   gridNum?: number
-  fontColor?: string
   prettify?: (value: number) => string
+  labelStyle?: Styles
+  markStyle?: Omit<MarkOption, 'label'>
+  processStyle?: Styles
+  tooltipStyle?: Styles
+  histSliderGap?: number 
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -58,20 +55,38 @@ const props = withDefaults(defineProps<Props>(), {
   barWidth: 6,
   barGap: 5,
   barRadius: 4,
-  labelColor: '#0091ff',
-  primaryColor: '#0091ff',
   holderColor: '#dee4ec',
-  handleColor: '#ffffff',
-  gridTextColor: 'silver',
-  transitionDuration: 80,
-  fontFamily: 'Arial, sans-serif',
-  fontSize: 12,
   updateColorOnChange: true,
   handleSize: 26,
   grid: true,
   gridNum: 4,
-  fontColor: '#000',
+  histSliderGap: 0,
+  colors: () => [],
   prettify: (value: number) => value.toString(),
+  labelStyle: () => ({
+    color: '#0091ff',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: 12,
+  }),
+  markStyle: () => ({
+    labelStyle: {
+      color: 'silver',
+      fontFamily: 'Arial, sans-serif',
+      fontSize: 12,
+    },
+    labelActiveStyle: {
+      color: '#0091ff',
+    },
+  }),
+  processStyle: () => ({
+    backgroundColor: '#0091ff',
+  }),
+  tooltipStyle: () => ({
+    backgroundColor: '#0091ff',
+    color: '#fff',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: 12,
+  }),
 })
 
 const svgElementRef = ref<SVGSVGElement | null>(null)
@@ -79,118 +94,111 @@ const svgElementRef = ref<SVGSVGElement | null>(null)
 const modelValue = defineModel<number>({ required: true })
 const sliderValue = computed({
   get: () => Math.max(minValue.value, Math.min(maxValue.value, modelValue.value)),
-  set: (value: number) => modelValue.value = value,
+  set: (value: number) => (modelValue.value = value),
 })
 
 const minValue = computed(() => props.min ?? d3.min(props.data) ?? 0)
 const maxValue = computed(() => props.max ?? d3.max(props.data) ?? 100)
 
-const svgWidth = computed(() => {
-  if (svgElementRef.value) {
-    return svgElementRef.value.clientWidth
-  }
-  return 0
-})
-
-const svgHeight = computed(() => {
-  if (svgElementRef.value) {
-    return svgElementRef.value.clientHeight
-  }
-
-  return 0
-})
+const svgWidth = ref(0)
+const svgHeight = ref(0)
 
 const marks = computed(() => {
   if (props.grid) {
     const count = props.gridNum
     const step = (maxValue.value - minValue.value) / count
-    const result: Record<number, string> = {}
+    const result: Record<number, MarkOption> = {}
     for (let i = 0; i <= count; i++) {
       const value = minValue.value + step * i
-      result[Math.round(value)] = props.prettify(value)
+      result[Math.round(value)] = {
+        ...props.markStyle,
+        label: props.prettify(value),
+      }
     }
     return result
   }
   return null
 })
 
-const processStyle = {
-  backgroundColor: props.primaryColor,
-}
+let hist: d3.Selection<SVGGElement, unknown, null, undefined> | null = null
 
-const tooltipStyle = {
-  backgroundColor: props.labelColor,
-  color: '#fff',
-  fontSize: `${props.fontSize}px`,
-  fontFamily: props.fontFamily,
-}
+const colorScale = computed<(value: number) => string>(() => {
+  if (props.colors.length > 0) {
+    return d3
+      .scaleLinear<string>()
+      .domain([minValue.value, maxValue.value])
+      .range(props.colors) satisfies (value: number) => string
+  }
 
-let xScale: d3.ScaleLinear<number, number>
-let yScale: d3.ScaleLinear<number, number>
-let histogramData: d3.Bin<number, number>[]
-let svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
-let hist: d3.Selection<SVGGElement, unknown, null, undefined>
-let colorsScale: d3.ScaleLinear<string, string> | (() => string)
+  return d3
+      .scaleLinear<string>()
+      .domain([minValue.value, maxValue.value])
+      .range(['#4facfe', '#00f2fe']) satisfies (value: number) => string
+})
+
+const xScale = computed(() => {
+  const width = svgWidth.value
+  return d3
+    .scaleLinear()
+    .domain([minValue.value, maxValue.value])
+    .range([0, width])
+    .clamp(true)
+})
+
+const histogramData = computed(() => {
+  const binsGenerator = d3
+    .bin()
+    .domain(xScale.value.domain() as [number, number])
+    .thresholds(Math.floor(svgWidth.value / (props.barWidth + props.barGap)))
+
+  return binsGenerator(props.data)
+})
+
+const yScale = computed(() => {
+  const height = svgHeight.value
+  const maxCount = d3.max(histogramData.value, (d) => d.length) ?? 0
+  return d3
+    .scaleLinear()
+    .range([height, 0])
+    .domain([0, maxCount])
+})
 
 function renderHistogram() {
   if (!svgElementRef.value) return
 
+  // Update svgWidth and svgHeight
+  svgWidth.value = svgElementRef.value.clientWidth
+  svgHeight.value = svgElementRef.value.clientHeight
+
   // Remove previous content
-  svg = d3.select(svgElementRef.value)
+  const svg = d3.select(svgElementRef.value)
   svg.selectAll('*').remove()
-
-  const width = svgWidth.value
-  const height = svgHeight.value
-
-  xScale = d3.scaleLinear()
-    .domain([minValue.value, maxValue.value])
-    .range([0, width])
-    .clamp(true)
-
-  yScale = d3.scaleLinear()
-    .range([height, 0])
 
   hist = svg.append('g').attr('class', 'histogram')
 
-  if (props.colors && props.colors.length > 0) {
-    colorsScale = d3.scaleLinear<string, string>()
-      .domain([minValue.value, maxValue.value])
-      .range(props.colors)
-  } else {
-    colorsScale = () => props.primaryColor
-  }
-
-  const binsGenerator = d3.bin()
-    .domain(xScale.domain() as [number, number])
-    .thresholds(width / (props.barWidth + props.barGap))
-
-  histogramData = binsGenerator(props.data)
-
-  yScale.domain([0, d3.max(histogramData, d => d.length) ?? 0])
-
-  hist.selectAll('rect')
-    .data(histogramData)
+  hist
+    .selectAll('rect')
+    .data(histogramData.value)
     .enter()
     .append('rect')
-    .attr('x', d => xScale(d.x0!))
-    .attr('y', d => yScale(d.length))
+    .attr('x', (d) => xScale.value(d.x0!))
+    .attr('y', (d) => yScale.value(d.length))
     .attr('width', props.barWidth)
-    .attr('height', d => height - yScale(d.length))
+    .attr('height', (d) => svgHeight.value - yScale.value(d.length))
     .attr('rx', props.barRadius)
-    .attr('fill', d => getBarColor(d.x0!))
+    .attr('fill', (d) => getBarColor(d.x0!))
 }
 
 function updateHistogram() {
   if (!hist) return
 
-  hist.selectAll('rect')
-    .attr('fill', d => getBarColor(d.x0!))
+  hist
+    .selectAll('rect')
+    .attr('fill', (d) => getBarColor((d as d3.Bin<number, number>).x0!))
 }
 
 function getBarColor(binValue: number): string {
-  return binValue < sliderValue.value
-      ? colorsScale(binValue)
-      : props.holderColor
+  return binValue < sliderValue.value ? colorScale.value(binValue) : props.holderColor
 }
 
 function onChange(value: number) {
@@ -201,12 +209,55 @@ function onChange(value: number) {
 
 onMounted(async () => {
   await nextTick()
-  sliderValue.value = minValue.value
+  modelValue.value = minValue.value
   renderHistogram()
 })
 
 watch(sliderValue, () => {
   updateHistogram()
+})
+
+watch(
+  () => [
+    props.data,
+    props.min,
+    props.max,
+    props.barWidth,
+    props.barGap,
+    props.barRadius,
+    props.colors,
+    props.holderColor,
+    colorScale.value, // Watch processStyle backgroundColor
+  ],
+  () => {
+    renderHistogram()
+  }
+)
+
+let resizeObserver: ResizeObserver
+
+onMounted(() => {
+  if (svgElementRef.value) {
+    svgWidth.value = svgElementRef.value.clientWidth
+    svgHeight.value = svgElementRef.value.clientHeight
+
+    resizeObserver = new ResizeObserver(() => {
+      svgWidth.value = svgElementRef.value?.clientWidth ?? 0
+      svgHeight.value = svgElementRef.value?.clientHeight ?? 0
+      renderHistogram()
+    })
+    resizeObserver.observe(svgElementRef.value)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (resizeObserver && svgElementRef.value) {
+    resizeObserver.unobserve(svgElementRef.value)
+  }
+})
+
+const histSliderGapOffset= computed(() => {
+  return `${props.histSliderGap}px`
 })
 </script>
 
@@ -215,5 +266,14 @@ watch(sliderValue, () => {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+.vue-histogram {
+  pointer-events: none;
+}
+
+.vue-slider {
+  flex-shrink: 0;
+  margin-top: v-bind(histSliderGapOffset);
 }
 </style>
