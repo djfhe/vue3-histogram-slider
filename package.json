@@ -2,40 +2,37 @@
   "name": "vue3-histogram-slider",
   "version": "0.4.15",
   "description": "Range slider with histogram for Vue 3",
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --name histogram-slider --entry ./src/lib/HistogramSlider.vue --target lib",
-    "lint": "vue-cli-service lint",
-    "prepare": "yarn build",
-    "prepublishOnly": "yarn lint && yarn build"
+    "dev": "vite",
+    "clean": "rm -fdr dist && rm -fdr build",
+    "build": "vite build --mode lib",
+    "lint": "eslint src/*",
+    "lint:fix": "eslint src/* --fix"
   },
-  "main": "dist/histogram-slider.umd.min.js",
   "dependencies": {
-    "@vue/compat": "^3.1.0",
-    "core-js": "^3.6.5",
-    "d3-array": "^3.2.4",
-    "d3-brush": "^3.0.0",
-    "d3-scale": "^4.0.2",
-    "d3-selection": "^3.0.0",
-    "d3-transition": "^3.0.1",
-    "jquery": "3.5",
-    "vue": "^3.1.0"
+    "d3": "^7.9.0",
+    "vue-slider-component": "4.1.0-beta.7"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-eslint": "~4.5.13",
-    "@vue/cli-service": "~4.5.13",
-    "@vue/compiler-sfc": "^3.1.0",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^6.2.2",
-    "lint-staged": "^8.1.5",
-    "prettier": "^2.2.1"
-  },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
+    "@clickbar/eslint-config": "^10.0.7",
+    "@headlessui/vue": "^1.7.23",
+    "@tailwindcss/forms": "^0.5.9",
+    "@types/d3": "^7.4.3",
+    "@types/eslint": "^9.6.1",
+    "@types/geojson": "^7946.0.14",
+    "@types/node": "^20.16.6",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vue/tsconfig": "^0.5.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.11.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.7",
+    "vite-plugin-dts": "^4.2.2",
+    "vue": "^3.5.8"
   },
   "keywords": [
     "vue",
@@ -46,14 +43,9 @@
     "histogram-slider"
   ],
   "license": "MIT",
-  "lint-staged": {
-    "*.{js,vue}": [
-      "vue-cli-service lint",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/phedone/vue3-histogram-slider.git"
-  }
+  },
+  "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
 }

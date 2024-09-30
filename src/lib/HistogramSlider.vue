@@ -1,531 +1,219 @@
-<!--suppress ALL -->
 <template>
-  <div :style="style" :id="`parent_${elementId}`" class="vue-histogram-slider-wrapper">
-    <slot v-if="resettable && zoomed" :reset="reset"
-      ><button @click="reset">Reset zoom</button></slot
-    >
-    <svg :id="elementId" class="vue-histogram-view">
-      <defs>
-        <clipPath :id="clipId">
-          <rect width="100%" :height="barHeight" x="0" y="0" />
-        </clipPath>
-      </defs>
+  <div class="vue-histogram-slider-wrapper">
+    <svg ref="svgElementRef" class="vue-histogram-view">
     </svg>
-    <div class="slider-wrapper">
-      <input type="text" :id="histogramId" :name="histogramId" value="" />
-    </div>
+    <VueSlider
+      v-model="sliderValue"
+      :min="minValue"
+      :max="maxValue"
+      :step="step"
+      :dot-size="handleSize"
+      :width="svgWidth"
+      :height="16"
+      :marks="marks"
+      :lazy="false"
+      :process-style="processStyle"
+      :tooltip-style="tooltipStyle"
+      :tooltip="'always'"
+      :tooltip-placement="['bottom']"
+      :tooltip-formatter="prettify"
+      @change="onChange"
+    />
   </div>
 </template>
 
-<script>
-let $ = require('jquery')
-import './range-slider'
-import props from './props'
-import { nextTick } from 'vue'
-import * as d3Scale from 'd3-scale'
-import * as d3Array from 'd3-array'
-import * as d3Select from 'd3-selection'
-import * as d3Trans from 'd3-transition'
-import * as d3Brush from 'd3-brush'
+<script setup lang="ts">
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import * as d3 from 'd3'
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/antd.css'
 
-export default {
-  name: 'HistogramSlider',
+interface Props {
+  data: number[]
+  min?: number
+  max?: number
+  step?: number
+  barWidth?: number
+  barGap?: number
+  barRadius?: number
+  labelColor?: string
+  primaryColor?: string
+  holderColor?: string
+  handleColor?: string
+  gridTextColor?: string
+  transitionDuration?: number
+  fontFamily?: string
+  fontSize?: number
+  colors?: string[]
+  updateColorOnChange?: boolean
+  handleSize?: number
+  grid?: boolean
+  gridNum?: number
+  fontColor?: string
+  prettify?: (value: number) => string
+}
 
-  props,
+const props = withDefaults(defineProps<Props>(), {
+  step: 1,
+  barWidth: 6,
+  barGap: 5,
+  barRadius: 4,
+  labelColor: '#0091ff',
+  primaryColor: '#0091ff',
+  holderColor: '#dee4ec',
+  handleColor: '#ffffff',
+  gridTextColor: 'silver',
+  transitionDuration: 80,
+  fontFamily: 'Arial, sans-serif',
+  fontSize: 12,
+  updateColorOnChange: true,
+  handleSize: 26,
+  grid: true,
+  gridNum: 4,
+  fontColor: '#000',
+  prettify: (value: number) => value.toString(),
+})
 
-  data() {
-    return {
-      zoomed: false,
-      uid: this.uuidv4()
+const svgElementRef = ref<SVGSVGElement | null>(null)
+
+const modelValue = defineModel<number>({ required: true })
+const sliderValue = computed({
+  get: () => Math.max(minValue.value, Math.min(maxValue.value, modelValue.value)),
+  set: (value: number) => modelValue.value = value,
+})
+
+const minValue = computed(() => props.min ?? d3.min(props.data) ?? 0)
+const maxValue = computed(() => props.max ?? d3.max(props.data) ?? 100)
+
+const svgWidth = computed(() => {
+  if (svgElementRef.value) {
+    return svgElementRef.value.clientWidth
+  }
+  return 0
+})
+
+const svgHeight = computed(() => {
+  if (svgElementRef.value) {
+    return svgElementRef.value.clientHeight
+  }
+
+  return 0
+})
+
+const marks = computed(() => {
+  if (props.grid) {
+    const count = props.gridNum
+    const step = (maxValue.value - minValue.value) / count
+    const result: Record<number, string> = {}
+    for (let i = 0; i <= count; i++) {
+      const value = minValue.value + step * i
+      result[Math.round(value)] = props.prettify(value)
     }
-  },
+    return result
+  }
+  return null
+})
 
-  computed: {
-    style() {
-      return `
-        width: ${this.computedWidth};
-        --primary-color: ${this.primaryColor};
-        --label-color: ${this.labelColor};
-        --holder-color: ${this.holderColor};
-        --handle-color: ${this.handleColor};
-        --grid-text-color: ${this.gridTextColor};
-        --line-height: ${this.lineHeight}px;
-        --font-family: ${this.fontFamily};
-        --font-size: ${this.fontSize};
-        --hist-slider-gap: ${-36 + this.histSliderGap}px;
-        --handle-size: ${this.handleSize}px;
-      `
-    },
-    computedWidth() {
-      return Object.prototype.toString.call(this.width) === '[object String]'
-        ? this.width
-        : this.width + 'px'
-    },
-    elementId() {
-      return `vue-histogram-${this.uid}`
-    },
-    histogramId() {
-      return `histogram-slider-${this.uid}`
-    },
-    clipId() {
-      return `clip-${this.uid}`
-    }
-  },
+const processStyle = {
+  backgroundColor: props.primaryColor,
+}
 
-  methods: {
-    async init() {
-      await nextTick()
-      const width = document.querySelector(`#parent_${this.elementId}`).clientWidth - 20
+const tooltipStyle = {
+  backgroundColor: props.labelColor,
+  color: '#fff',
+  fontSize: `${props.fontSize}px`,
+  fontFamily: props.fontFamily,
+}
 
-      const min = this.min || d3Array.min(this.data)
-      const max = this.max || d3Array.max(this.data)
+let xScale: d3.ScaleLinear<number, number>
+let yScale: d3.ScaleLinear<number, number>
+let histogramData: d3.Bin<number, number>[]
+let svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
+let hist: d3.Selection<SVGGElement, unknown, null, undefined>
+let colorsScale: d3.ScaleLinear<string, string> | (() => string)
 
-      const isTypeSingle = this.type == 'single'
-      let svg, histogram, x, y, hist, bins, colors, brush
+function renderHistogram() {
+  if (!svgElementRef.value) return
 
-      this.updateBarColor = (val) => {
-        let transition = d3Trans.transition().duration(this.transitionDuration)
+  // Remove previous content
+  svg = d3.select(svgElementRef.value)
+  svg.selectAll('*').remove()
 
-        d3Trans
-          .transition(transition)
-          .selectAll(`.vue-histogram-slider-bar-${this.elementId}`)
-          .attr('fill', (d) => {
-            if (isTypeSingle) {
-              return d.x0 < val.from ? colors(d.x0) : this.holderColor
-            }
-            return d.x0 <= val.to && d.x0 >= val.from ? colors(d.x0) : this.holderColor
-          })
-      }
+  const width = svgWidth.value
+  const height = svgHeight.value
 
-      // x scale for time
-      x = d3Scale.scaleLinear().domain([min, max]).range([0, width]).clamp(true)
+  xScale = d3.scaleLinear()
+    .domain([minValue.value, maxValue.value])
+    .range([0, width])
+    .clamp(true)
 
-      // y scale for histogram
-      y = d3Scale.scaleLinear().range([this.barHeight, 0])
+  yScale = d3.scaleLinear()
+    .range([height, 0])
 
-      svg = d3Select
-        .select(`#${this.elementId}`)
-        .attr('width', width)
-        .attr('height', this.barHeight)
+  hist = svg.append('g').attr('class', 'histogram')
 
-      hist = svg.append('g').attr('class', 'histogram')
+  if (props.colors && props.colors.length > 0) {
+    colorsScale = d3.scaleLinear<string, string>()
+      .domain([minValue.value, maxValue.value])
+      .range(props.colors)
+  } else {
+    colorsScale = () => props.primaryColor
+  }
 
-      if (this.clip) {
-        hist.attr('clip-path', `url(#${this.clipId})`)
-      }
+  const binsGenerator = d3.bin()
+    .domain(xScale.domain() as [number, number])
+    .thresholds(width / (props.barWidth + props.barGap))
 
-      if (this.colors) {
-        colors = d3Scale.scaleLinear().domain([min, max]).range(this.colors)
-      } else {
-        colors = () => this.primaryColor
-      }
+  histogramData = binsGenerator(props.data)
 
-      const updateHistogram = ([min, max]) => {
-        let transition = d3Trans.transition().duration(this.transitionDuration)
+  yScale.domain([0, d3.max(histogramData, d => d.length) ?? 0])
 
-        hist.selectAll(`.vue-histogram-slider-bar-${this.elementId}`).remove()
+  hist.selectAll('rect')
+    .data(histogramData)
+    .enter()
+    .append('rect')
+    .attr('x', d => xScale(d.x0!))
+    .attr('y', d => yScale(d.length))
+    .attr('width', props.barWidth)
+    .attr('height', d => height - yScale(d.length))
+    .attr('rx', props.barRadius)
+    .attr('fill', d => getBarColor(d.x0!))
+}
 
-        histogram = d3Array
-          .bin()
-          .domain(x.domain())
-          .thresholds(width / (this.barWidth + this.barGap))
+function updateHistogram() {
+  if (!hist) return
 
-        // group data for bars
-        bins = histogram(this.data)
+  hist.selectAll('rect')
+    .attr('fill', d => getBarColor(d.x0!))
+}
 
-        y.domain([0, d3Array.max(bins, (d) => d.length)])
+function getBarColor(binValue: number): string {
+  return binValue < sliderValue.value
+      ? colorsScale(binValue)
+      : props.holderColor
+}
 
-        hist
-          .selectAll(`.vue-histogram-slider-bar-${this.elementId}`)
-          .data(bins)
-          .enter()
-          .insert('rect', 'rect.overlay')
-          .attr('class', `vue-histogram-slider-bar-${this.elementId}`)
-          .attr('x', (d) => x(d.x0))
-          .attr('y', (d) => y(d.length))
-          .attr('rx', this.barRadius)
-          .attr('width', this.barWidth)
-          .transition(transition)
-          .attr('height', (d) => this.barHeight - y(d.length))
-          .attr('fill', (d) => (isTypeSingle ? this.holderColor : colors(d.x0)))
-
-        if (this.ionRangeSlider) {
-          this.ionRangeSlider.destroy()
-        }
-
-        this.histSlider = $(`#${this.histogramId}`).ionRangeSlider({
-          skin: 'round',
-          min: min,
-          max: max,
-          from: min,
-          to: max,
-          type: this.type,
-          grid: this.grid,
-          step: this.step,
-          from_fixed: this.fromFixed,
-          to_fixed: this.toFixed,
-          hide_min_max: this.hideMinMax,
-          hide_from_to: this.hideFromTo,
-          force_edges: this.forceEdges,
-          drag_interval: this.dragInterval,
-          grid_num: this.gridNum,
-          block: this.block,
-          keyboard: this.keyboard,
-          prettify: this.prettify,
-          onStart: (val) => {
-            this.$emit('start', val)
-          },
-          onUpdate: (val) => {
-            this.$emit('update', val)
-          },
-          onFinish: (val) => {
-            if (!this.updateColorOnChange) {
-              this.updateBarColor(val)
-            }
-            this.$emit('finish', val)
-          },
-          onChange: (val) => {
-            if (this.updateColorOnChange) {
-              this.updateBarColor(val)
-            }
-            this.$emit('change', val)
-          }
-        })
-
-        this.ionRangeSlider = this.histSlider.data('ionRangeSlider')
-
-        setTimeout(
-          () => this.updateBarColor(this.ionRangeSlider.result),
-          this.transitionDuration + 10
-        )
-      }
-
-      if (this.clip) {
-        brush = d3Brush.brushX().on('end', () => {
-          let extent = d3Select.event.selection
-          if (extent) {
-            let domain = [x.invert(extent[0]), x.invert(extent[1])]
-            x.domain(domain)
-
-            this.minPos = this.ionRangeSlider.result.from
-            this.maxPos = this.ionRangeSlider.result.to
-
-            const pos = {
-              from: Math.max(domain[0], this.ionRangeSlider.result.from),
-              to: Math.min(domain[1], this.ionRangeSlider.result.to)
-            }
-            this.$emit('finish', pos)
-            this.$emit('change', pos)
-            this.zoomed = true
-
-            updateHistogram(domain)
-            hist.call(brush.clear)
-          }
-        })
-        hist.call(brush)
-      }
-      updateHistogram([min, max])
-    },
-    update({ from, to }) {
-      if (this.ionRangeSlider) {
-        this.ionRangeSlider.update({ from, to })
-        this.updateBarColor({ from, to })
-      }
-    },
-    async reset() {
-      d3Select.select(`#${this.elementId}`).selectAll('*').remove()
-      await this.init()
-    },
-    uuidv4() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c == 'x' ? r : (r & 0x3) | 0x8
-        return v.toString(16)
-      })
-    }
-  },
-  async mounted() {
-    this.uid = this.uuidv4()
-    await this.init()
-  },
-
-  unmounted() {
-    this.ionRangeSlider.destroy()
+function onChange(value: number) {
+  if (props.updateColorOnChange) {
+    updateHistogram()
   }
 }
+
+onMounted(async () => {
+  await nextTick()
+  sliderValue.value = minValue.value
+  renderHistogram()
+})
+
+watch(sliderValue, () => {
+  updateHistogram()
+})
 </script>
 
-<style>
-.vue-histogram-view {
-  z-index: 9;
-}
-
-.slider-wrapper {
-  width: 100%;
-  margin-top: var(--hist-slider-gap);
-}
-
+<style scoped>
 .vue-histogram-slider-wrapper {
   display: flex;
-  align-items: center;
   flex-direction: column;
-}
-
-.vue-histogram-slider-bar {
-  pointer-events: none;
-}
-
-.irs {
-  font-family: var(--font-family);
-  font-size: var(--font-size);
-  position: relative;
-  display: block;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.irs-line {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  outline: none !important;
-  cursor: pointer;
-}
-
-.irs-bar {
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  left: 0;
-  width: 0;
-}
-
-.irs-shadow {
-  position: absolute;
-  display: none;
-  left: 0;
-  width: 0;
-}
-
-.irs-handle {
-  position: absolute;
-  display: block;
-  box-sizing: border-box;
-  cursor: default;
-  z-index: 1;
-}
-
-.irs-handle.type_last {
-  z-index: 2;
-}
-
-.irs-min,
-.irs-max {
-  position: absolute;
-  display: block;
-  cursor: default;
-}
-
-.irs-min {
-  left: 0;
-}
-
-.irs-max {
-  right: 0;
-}
-
-.irs-from,
-.irs-to,
-.irs-single {
-  position: absolute;
-  display: block;
-  top: 0;
-  left: 0;
-  cursor: default;
-  white-space: nowrap;
-  z-index: 99;
-}
-
-.irs-grid {
-  position: absolute;
-  display: none;
-  bottom: 0;
-  left: 0;
   width: 100%;
-  height: 20px;
-}
-
-.irs-with-grid .irs-grid {
-  display: block;
-}
-
-.irs-grid-pol {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 8px;
-  background: #000;
-}
-
-.irs-grid-pol.small {
-  height: var(--line-height);
-}
-
-.irs-grid-text {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  white-space: nowrap;
-  text-align: center;
-  font-size: 9px;
-  line-height: 9px;
-  padding: 0 3px;
-  color: #000;
-}
-
-.irs-disable-mask {
-  position: absolute;
-  display: block;
-  top: 0;
-  left: -1%;
-  width: 102%;
-  height: 100%;
-  cursor: default;
-  background: rgba(0, 0, 0, 0);
-  z-index: 2;
-}
-
-.lt-ie9 .irs-disable-mask {
-  background: #000;
-  filter: alpha(opacity=0);
-  cursor: not-allowed;
-}
-
-.irs-disabled {
-  opacity: 0.4;
-}
-
-.irs-hidden-input {
-  position: absolute !important;
-  display: block !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  font-size: 0 !important;
-  line-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: hidden;
-  outline: none !important;
-  z-index: -9999 !important;
-  background: none !important;
-  border-style: solid !important;
-  border-color: transparent !important;
-}
-
-.irs--round {
-  height: 50px;
-}
-
-.irs--round.irs-with-grid {
-  height: 65px;
-}
-
-.irs--round .irs-line {
-  top: 36px;
-  height: var(--line-height);
-  background-color: var(--holder-color);
-  border-radius: var(--line-height);
-}
-
-.irs--round .irs-bar {
-  top: 36px;
-  height: var(--line-height);
-  background-color: var(--primary-color);
-}
-
-.irs--round .irs-bar--single {
-  border-radius: 4px 0 0 4px;
-}
-
-.irs--round .irs-shadow {
-  height: var(--line-height);
-  bottom: 21px;
-  background-color: rgba(222, 228, 236, 0.5);
-}
-
-.irs--round .irs-handle {
-  cursor: pointer;
-  top: calc(50% - var(--handle-size) / 2 + 5px);
-  width: var(--handle-size);
-  height: var(--handle-size);
-  background-color: var(--handle-color);
-  z-index: 9;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0, 0, 255, 0.3);
-}
-
-.irs--round .irs-handle.state_hover,
-.irs--round .irs-handle:hover {
-  background-color: #f0f6ff;
-}
-
-.irs--round .irs-min,
-.irs--round .irs-max {
-  color: #333;
-  font-size: 14px;
-  line-height: 1;
-  top: 0;
-  padding: 3px 5px;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-.irs--round .irs-from,
-.irs--round .irs-to,
-.irs--round .irs-single {
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  text-shadow: none;
-  padding: 3px 5px;
-  background-color: var(--label-color);
-  color: white;
-  border-radius: 4px;
-}
-
-.irs--round .irs-from:before,
-.irs--round .irs-to:before,
-.irs--round .irs-single:before {
-  position: absolute;
-  display: block;
-  content: '';
-  bottom: -6px;
-  left: 50%;
-  width: 0;
-  height: 0;
-  margin-left: -3px;
-  overflow: hidden;
-  border: 3px solid transparent;
-  border-top-color: var(--primary-color);
-}
-
-.irs--round .irs-grid {
-  height: 25px;
-}
-
-.irs--round .irs-grid-pol {
-  background-color: #dedede;
-}
-
-.irs--round .irs-grid-text {
-  color: var(--grid-text-color);
-  font-size: 13px;
 }
 </style>

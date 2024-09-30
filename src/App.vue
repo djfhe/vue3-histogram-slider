@@ -1,65 +1,55 @@
 <template>
   <div>
     <HistogramSlider
-      style="margin: 200px auto"
-      type="double"
+      style="margin: 200px auto; width: 50%"
       :width="900"
       :bar-height="110"
       :data="data"
       :prettify="prettify"
-      :clip="true"
-      :drag-interval="true"
-      :hideFromTo="true"
-      @finish="finish"
-      :force-edges="false"
-      :colors="['#4facfe', '#00f2fe']"
+      :grid="true"
       :grid-num="2"
+      :colors="['#4facfe', '#00f2fe']"
+      v-model="sliderValue1"
+      @finish="finish"
     />
-
+<!-- 
     <HistogramSlider
+      v-model="sliderValue2"
       style="margin: 200px auto"
-      ref="hist"
-      type="double"
       :width="900"
       :bar-height="110"
       :data="data"
       :prettify="prettify"
-      :clip="true"
-      :drag-interval="true"
-      :hideFromTo="true"
-      @finish="finish"
-      :force-edges="false"
+      :grid="true"
+      :grid-num="2"
       :colors="['#4facfe', '#00f2fe']"
-      v-slot="{ reset }"
+      @finish="finish"
       resettable
+      v-slot="{ reset }"
     >
       <button @click="reset">Ah</button>
-    </HistogramSlider>
+    </HistogramSlider> -->
   </div>
 </template>
 
-<script>
-import HistogramSlider from './lib/HistogramSlider'
-export default {
-  data() {
-    return {
-      data: require('../resources/data.json').map((d) => new Date(d).valueOf()),
-      prettify: function (ts) {
-        return new Date(ts).toLocaleDateString('en', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric'
-        })
-      }
-    }
-  },
+<script setup lang="ts">
+import { ref } from 'vue'
+import HistogramSlider from './lib/HistogramSlider.vue'
+import dataJson from '../resources/data.json'
 
-  methods: {
-    finish(val) {}
-  },
+const data = ref<number[]>(dataJson.map((d: string) => new Date(d).valueOf()))
 
-  components: {
-    HistogramSlider
-  }
+const sliderValue1 = ref<number>(0)
+const sliderValue2 = ref<number>(0)
+function prettify(ts: number): string {
+  return new Date(ts).toLocaleDateString('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
+function finish(val: any) {
+  console.log('Slider finished:', val)
 }
 </script>
