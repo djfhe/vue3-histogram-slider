@@ -1,21 +1,19 @@
-function i() {
-  this.innerHTML = "";
-}
-function e(n) {
+import { Selection as e } from "./vue3-histogram-slider.esm38.js";
+import h from "./vue3-histogram-slider.esm81.js";
+import _ from "./vue3-histogram-slider.esm74.js";
+function p(r) {
   return function() {
-    this.innerHTML = n;
+    return h(r.apply(this, arguments));
   };
 }
-function o(n) {
-  return function() {
-    var t = n.apply(this, arguments);
-    this.innerHTML = t ?? "";
-  };
-}
-function r(n) {
-  return arguments.length ? this.each(n == null ? i : (typeof n == "function" ? o : e)(n)) : this.node().innerHTML;
+function s(r) {
+  typeof r == "function" ? r = p(r) : r = _(r);
+  for (var l = this._groups, m = l.length, o = [], i = [], n = 0; n < m; ++n)
+    for (var a = l[n], u = a.length, t, f = 0; f < u; ++f)
+      (t = a[f]) && (o.push(r.call(t, t.__data__, f, a)), i.push(t));
+  return new e(o, i);
 }
 export {
-  r as default
+  s as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm40.js.map

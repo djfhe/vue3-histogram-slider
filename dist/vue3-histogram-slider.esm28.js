@@ -1,20 +1,16 @@
-import { Selection as h } from "./vue3-histogram-slider.esm16.js";
-function N(t) {
-  t || (t = u);
-  function n(_, f) {
-    return _ && f ? t(_.__data__, f.__data__) : !_ - !f;
+function d(l, t) {
+  let f, n;
+  if (t === void 0)
+    for (const e of l)
+      e != null && (f === void 0 ? e >= e && (f = n = e) : (f > e && (f = e), n < e && (n = e)));
+  else {
+    let e = -1;
+    for (let i of l)
+      (i = t(i, ++e, l)) != null && (f === void 0 ? i >= i && (f = n = i) : (f > i && (f = i), n < i && (n = i)));
   }
-  for (var a = this._groups, i = a.length, o = new Array(i), e = 0; e < i; ++e) {
-    for (var c = a[e], d = c.length, l = o[e] = new Array(d), s, r = 0; r < d; ++r)
-      (s = c[r]) && (l[r] = s);
-    l.sort(n);
-  }
-  return new h(o, this._parents).order();
-}
-function u(t, n) {
-  return t < n ? -1 : t > n ? 1 : t >= n ? 0 : NaN;
+  return [f, n];
 }
 export {
-  N as default
+  d as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm28.js.map

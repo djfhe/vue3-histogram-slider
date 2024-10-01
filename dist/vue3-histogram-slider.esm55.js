@@ -1,7 +1,7 @@
-function u(n, l) {
-  return n == null || l == null ? NaN : n < l ? -1 : n > l ? 1 : n >= l ? 0 : NaN;
+function e() {
+  return !this.node();
 }
 export {
-  u as default
+  e as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm55.js.map

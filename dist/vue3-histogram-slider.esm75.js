@@ -1,7 +1,7 @@
-function a(r) {
-  return r == null ? [] : Array.isArray(r) ? r : Array.from(r);
+function t(e) {
+  return e.ownerDocument && e.ownerDocument.defaultView || e.document && e || e.defaultView;
 }
 export {
-  a as default
+  t as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm75.js.map

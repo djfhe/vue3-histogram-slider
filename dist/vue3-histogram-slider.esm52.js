@@ -1,10 +1,5 @@
-function n() {
-  return [];
-}
-function e(t) {
-  return t == null ? n : function() {
-    return this.querySelectorAll(t);
-  };
+function e() {
+  return Array.from(this);
 }
 export {
   e as default

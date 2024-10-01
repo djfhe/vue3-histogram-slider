@@ -1,8 +1,5 @@
-function t() {
-  var a = arguments[0];
-  return arguments[0] = this, a.apply(null, arguments), this;
-}
+var r = Array.prototype, a = r.slice;
 export {
-  t as default
+  a as slice
 };
 //# sourceMappingURL=vue3-histogram-slider.esm29.js.map

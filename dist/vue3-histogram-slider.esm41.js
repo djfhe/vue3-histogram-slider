@@ -1,10 +1,17 @@
-function i() {
-  this.nextSibling && this.parentNode.appendChild(this);
+import { childMatcher as i } from "./vue3-histogram-slider.esm37.js";
+var n = Array.prototype.find;
+function r(t) {
+  return function() {
+    return n.call(this.children, t);
+  };
 }
 function e() {
-  return this.each(i);
+  return this.firstElementChild;
+}
+function o(t) {
+  return this.select(t == null ? e : r(typeof t == "function" ? t : i(t)));
 }
 export {
-  e as default
+  o as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm41.js.map

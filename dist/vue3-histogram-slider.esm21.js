@@ -1,13 +1,16 @@
-import { Selection as s } from "./vue3-histogram-slider.esm16.js";
-import c from "./vue3-histogram-slider.esm15.js";
-function v(t) {
-  typeof t != "function" && (t = c(t));
-  for (var i = this._groups, l = i.length, a = new Array(l), r = 0; r < l; ++r)
-    for (var n = i[r], _ = n.length, o = a[r] = [], e, f = 0; f < _; ++f)
-      (e = n[f]) && t.call(e, e.__data__, f, n) && o.push(e);
-  return new s(a, this._parents);
+import o from "./vue3-histogram-slider.esm84.js";
+var r, t, f;
+e({
+  thousands: ",",
+  grouping: [3],
+  currency: ["$", ""]
+});
+function e(a) {
+  return r = o(a), t = r.format, f = r.formatPrefix, r;
 }
 export {
-  v as default
+  e as default,
+  t as format,
+  f as formatPrefix
 };
 //# sourceMappingURL=vue3-histogram-slider.esm21.js.map

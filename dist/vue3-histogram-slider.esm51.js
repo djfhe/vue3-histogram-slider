@@ -1,11 +1,8 @@
 function t() {
-}
-function e(n) {
-  return n == null ? t : function() {
-    return this.querySelector(n);
-  };
+  var a = arguments[0];
+  return arguments[0] = this, a.apply(null, arguments), this;
 }
 export {
-  e as default
+  t as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm51.js.map

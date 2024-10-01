@@ -1,29 +1,53 @@
-var o = /^(?:(.)?([<>=^]))?([+\-( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?(~)?([a-z%])?$/i;
-function d(t) {
-  if (!(n = o.exec(t))) throw new Error("invalid format: " + t);
-  var n;
-  return new i({
-    fill: n[1],
-    align: n[2],
-    sign: n[3],
-    symbol: n[4],
-    zero: n[5],
-    width: n[6],
-    comma: n[7],
-    precision: n[8] && n[8].slice(1),
-    trim: n[9],
-    type: n[10]
+function h(i) {
+  return function(t) {
+    i.call(this, t, this.__data__);
+  };
+}
+function p(i) {
+  return i.trim().split(/^|\s+/).map(function(t) {
+    var s = "", n = t.indexOf(".");
+    return n >= 0 && (s = t.slice(n + 1), t = t.slice(0, n)), { type: t, name: s };
   });
 }
-d.prototype = i.prototype;
-function i(t) {
-  this.fill = t.fill === void 0 ? " " : t.fill + "", this.align = t.align === void 0 ? ">" : t.align + "", this.sign = t.sign === void 0 ? "-" : t.sign + "", this.symbol = t.symbol === void 0 ? "" : t.symbol + "", this.zero = !!t.zero, this.width = t.width === void 0 ? void 0 : +t.width, this.comma = !!t.comma, this.precision = t.precision === void 0 ? void 0 : +t.precision, this.trim = !!t.trim, this.type = t.type === void 0 ? "" : t.type + "";
+function c(i) {
+  return function() {
+    var t = this.__on;
+    if (t) {
+      for (var s = 0, n = -1, e = t.length, r; s < e; ++s)
+        r = t[s], (!i.type || r.type === i.type) && r.name === i.name ? this.removeEventListener(r.type, r.listener, r.options) : t[++n] = r;
+      ++n ? t.length = n : delete this.__on;
+    }
+  };
 }
-i.prototype.toString = function() {
-  return this.fill + this.align + this.sign + this.symbol + (this.zero ? "0" : "") + (this.width === void 0 ? "" : Math.max(1, this.width | 0)) + (this.comma ? "," : "") + (this.precision === void 0 ? "" : "." + Math.max(0, this.precision | 0)) + (this.trim ? "~" : "") + this.type;
-};
+function v(i, t, s) {
+  return function() {
+    var n = this.__on, e, r = h(t);
+    if (n) {
+      for (var a = 0, f = n.length; a < f; ++a)
+        if ((e = n[a]).type === i.type && e.name === i.name) {
+          this.removeEventListener(e.type, e.listener, e.options), this.addEventListener(e.type, e.listener = r, e.options = s), e.value = t;
+          return;
+        }
+    }
+    this.addEventListener(i.type, r, s), e = { type: i.type, name: i.name, value: t, listener: r, options: s }, n ? n.push(e) : this.__on = [e];
+  };
+}
+function _(i, t, s) {
+  var n = p(i + ""), e, r = n.length, a;
+  if (arguments.length < 2) {
+    var f = this.node().__on;
+    if (f) {
+      for (var l = 0, u = f.length, o; l < u; ++l)
+        for (e = 0, o = f[l]; e < r; ++e)
+          if ((a = n[e]).type === o.type && a.name === o.name)
+            return o.value;
+    }
+    return;
+  }
+  for (f = t ? v : c, e = 0; e < r; ++e) this.each(f(n[e], t, s));
+  return this;
+}
 export {
-  i as FormatSpecifier,
-  d as default
+  _ as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm70.js.map

@@ -1,10 +1,14 @@
-function u(e, t) {
-  var n = /* @__PURE__ */ new Date();
-  return e = +e, t = +t, function(r) {
-    return n.setTime(e * (1 - r) + t * r), n;
+import c from "./vue3-histogram-slider.esm79.js";
+function g(e, n) {
+  var t = n ? n.length : 0, o = e ? Math.min(t, e.length) : 0, f = new Array(o), i = new Array(t), r;
+  for (r = 0; r < o; ++r) f[r] = c(e[r], n[r]);
+  for (; r < t; ++r) i[r] = n[r];
+  return function(a) {
+    for (r = 0; r < o; ++r) i[r] = f[r](a);
+    return i;
   };
 }
 export {
-  u as default
+  g as genericArray
 };
 //# sourceMappingURL=vue3-histogram-slider.esm93.js.map

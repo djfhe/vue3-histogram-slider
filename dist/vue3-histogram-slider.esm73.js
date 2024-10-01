@@ -1,6 +1,9 @@
-import t from "./vue3-histogram-slider.esm84.js";
-function e(a, o) {
-  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(t(o) / 3))) * 3 - t(Math.abs(a)));
+function t() {
+}
+function e(n) {
+  return n == null ? t : function() {
+    return this.querySelector(n);
+  };
 }
 export {
   e as default

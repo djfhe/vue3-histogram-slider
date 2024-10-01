@@ -1,16 +1,5 @@
-function f(r, e) {
-  e || (e = []);
-  var u = r ? Math.min(e.length, r.length) : 0, i = e.slice(), n;
-  return function(t) {
-    for (n = 0; n < u; ++n) i[n] = r[n] * (1 - t) + e[n] * t;
-    return i;
-  };
-}
-function a(r) {
-  return ArrayBuffer.isView(r) && !(r instanceof DataView);
-}
+const a = (t) => () => t;
 export {
-  f as default,
-  a as isNumberArray
+  a as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm97.js.map

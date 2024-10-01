@@ -1,16 +1,25 @@
-function a(e) {
-  return Math.abs(e = Math.round(e)) >= 1e21 ? e.toLocaleString("en").replace(/,/g, "") : e.toString(10);
+import o from "./vue3-histogram-slider.esm97.js";
+function e(n, r) {
+  return function(t) {
+    return n + t * r;
+  };
 }
-function r(e, i) {
-  if ((n = (e = i ? e.toExponential(i - 1) : e.toExponential()).indexOf("e")) < 0) return null;
-  var n, t = e.slice(0, n);
-  return [
-    t.length > 1 ? t[0] + t.slice(2) : t,
-    +e.slice(n + 1)
-  ];
+function i(n, r, t) {
+  return n = Math.pow(n, t), r = Math.pow(r, t) - n, t = 1 / t, function(u) {
+    return Math.pow(n + u * r, t);
+  };
+}
+function a(n) {
+  return (n = +n) == 1 ? f : function(r, t) {
+    return t - r ? i(r, t, n) : o(isNaN(r) ? t : r);
+  };
+}
+function f(n, r) {
+  var t = r - n;
+  return t ? e(n, t) : o(isNaN(n) ? r : n);
 }
 export {
-  a as default,
-  r as formatDecimalParts
+  f as default,
+  a as gamma
 };
 //# sourceMappingURL=vue3-histogram-slider.esm100.js.map

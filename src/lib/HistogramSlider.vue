@@ -17,6 +17,7 @@
       :tooltip="tooltip"
       :tooltip-placement="['bottom']"
       :tooltip-formatter="prettify"
+      :duration="0"
     />
   </div>
 </template>
@@ -29,8 +30,14 @@ import { scaleLinear } from 'd3-scale'
 import { select } from 'd3-selection'
 import type { Selection } from 'd3-selection'
 import VueSlider, { type MarkOption, type Marks, type Styles } from 'vue-3-slider-component'
+import { watchDebounced } from '@vueuse/core'
 
 type MarkStyle = Omit<MarkOption, 'label'>
+
+type DebouncedOptions = {
+  wait?: number
+  maxWait?: number
+}
 
 interface Props {
   data: number[]
@@ -53,6 +60,10 @@ interface Props {
   tooltipStyle?: Styles
   histSliderGap?: number 
   tooltip?: 'none' | 'always' | 'focus' | 'hover' | 'active'
+  debounced?: boolean | {
+    wait?: number
+    maxWait?: number
+  }
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -93,14 +104,45 @@ const props = withDefaults(defineProps<Props>(), {
     fontFamily: 'Arial, sans-serif',
     fontSize: 12,
   }),
+  debounced: false,
+})
+
+const debouncedOptions = computed<Required<DebouncedOptions>>(() => {
+  if (typeof props.debounced === 'object') {
+    return {
+      wait: props.debounced.wait ?? 0,
+      maxWait: props.debounced.maxWait ?? 0,
+    }
+  }
+
+  return {
+    wait: 0,
+    maxWait: 0,
+  }
 })
 
 const svgElementRef = ref<SVGSVGElement | null>(null)
 
+const awaitingDebouncedUpdate = ref(false)
 const modelValue = defineModel<number>({ required: true })
+const internalModelValue = ref(modelValue.value)
+
+watch(modelValue, () => {
+  if (awaitingDebouncedUpdate.value) return
+  internalModelValue.value = modelValue.value
+})
+
+watchDebounced(internalModelValue, (value) => {
+  awaitingDebouncedUpdate.value = false
+  modelValue.value = value
+}, debouncedOptions.value)
+
 const sliderValue = computed({
-  get: () => Math.max(minValue.value, Math.min(maxValue.value, modelValue.value)),
-  set: (value: number) => (modelValue.value = value),
+  get: () => Math.max(minValue.value, Math.min(maxValue.value, internalModelValue.value)),
+  set: (value: number) => {
+    awaitingDebouncedUpdate.value = true
+    internalModelValue.value = value
+  },
 })
 
 const minValue = computed(() => props.min ?? min(props.data) ?? 0)
