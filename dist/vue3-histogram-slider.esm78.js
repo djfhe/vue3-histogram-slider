@@ -1,9 +1,7 @@
-function t(e, n) {
-  return e = +e, n = +n, function(r) {
-    return e * (1 - r) + n * r;
-  };
+function n(e) {
+  return +e;
 }
 export {
-  t as default
+  n as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm78.js.map

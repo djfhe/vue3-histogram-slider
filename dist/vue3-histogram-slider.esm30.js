@@ -1,7 +1,7 @@
-function n(t) {
-  return () => t;
+function e() {
+  return Array.from(this);
 }
 export {
-  n as default
+  e as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm30.js.map

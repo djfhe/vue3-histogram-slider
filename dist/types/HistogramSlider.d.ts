@@ -22,10 +22,6 @@ interface Props {
     tooltipStyle?: Styles;
     histSliderGap?: number;
     tooltip?: 'none' | 'always' | 'focus' | 'hover' | 'active';
-    debounced?: boolean | {
-        wait?: number;
-        maxWait?: number;
-    };
 }
 declare let __VLS_typeProps: Props;
 type __VLS_PublicProps = {
@@ -53,9 +49,5 @@ declare const _default: DefineComponent<__VLS_PublicProps, {}, {}, {}, {}, Compo
     tooltipStyle: Styles;
     histSliderGap: number;
     tooltip: "none" | "always" | "focus" | "hover" | "active";
-    debounced: boolean | {
-        wait?: number;
-        maxWait?: number;
-    };
 }, {}, {}, {}, string, ComponentProvideOptions, false, {}, any>;
 export default _default;

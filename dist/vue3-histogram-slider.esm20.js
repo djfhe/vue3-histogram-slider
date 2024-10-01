@@ -1,8 +1,17 @@
-import t from "./vue3-histogram-slider.esm85.js";
-function e(a, o) {
-  return Math.max(0, Math.max(-8, Math.min(8, Math.floor(t(o) / 3))) * 3 - t(Math.abs(a)));
+import { childMatcher as e } from "./vue3-histogram-slider.esm15.js";
+var t = Array.prototype.filter;
+function n() {
+  return Array.from(this.children);
+}
+function i(r) {
+  return function() {
+    return t.call(this.children, r);
+  };
+}
+function o(r) {
+  return this.selectAll(r == null ? n : i(typeof r == "function" ? r : e(r)));
 }
 export {
-  e as default
+  o as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm20.js.map

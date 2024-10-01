@@ -1,15 +1,17 @@
-function t() {
-  var e = this.cloneNode(!1), n = this.parentNode;
-  return n ? n.insertBefore(e, this.nextSibling) : e;
-}
-function o() {
-  var e = this.cloneNode(!0), n = this.parentNode;
-  return n ? n.insertBefore(e, this.nextSibling) : e;
-}
-function i(e) {
-  return this.select(e ? o : t);
+function a(e, t) {
+  switch (arguments.length) {
+    case 0:
+      break;
+    case 1:
+      this.range(e);
+      break;
+    default:
+      this.range(t).domain(e);
+      break;
+  }
+  return this;
 }
 export {
-  i as default
+  a as initRange
 };
 //# sourceMappingURL=vue3-histogram-slider.esm68.js.map

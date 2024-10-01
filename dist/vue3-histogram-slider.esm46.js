@@ -1,9 +1,15 @@
-import t from "./vue3-histogram-slider.esm83.js";
-import { Selection as e } from "./vue3-histogram-slider.esm38.js";
+function t() {
+  var e = this.cloneNode(!1), n = this.parentNode;
+  return n ? n.insertBefore(e, this.nextSibling) : e;
+}
 function o() {
-  return new e(this._exit || this._groups.map(t), this._parents);
+  var e = this.cloneNode(!0), n = this.parentNode;
+  return n ? n.insertBefore(e, this.nextSibling) : e;
+}
+function i(e) {
+  return this.select(e ? o : t);
 }
 export {
-  o as default
+  i as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm46.js.map

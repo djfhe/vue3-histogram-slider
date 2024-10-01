@@ -1,40 +1,59 @@
-import p, { copy as v } from "./vue3-histogram-slider.esm13.js";
-import { initRange as c } from "./vue3-histogram-slider.esm14.js";
-import h from "./vue3-histogram-slider.esm15.js";
-import s, { tickIncrement as d } from "./vue3-histogram-slider.esm16.js";
-function k(i) {
-  var f = i.domain;
-  return i.ticks = function(n) {
-    var t = f();
-    return s(t[0], t[t.length - 1], n ?? 10);
-  }, i.tickFormat = function(n, t) {
-    var o = f();
-    return h(o[0], o[o.length - 1], n ?? 10, t);
-  }, i.nice = function(n) {
-    n == null && (n = 10);
-    var t = f(), o = 0, l = t.length - 1, e = t[o], a = t[l], u, r, m = 10;
-    for (a < e && (r = e, e = a, a = r, r = o, o = l, l = r); m-- > 0; ) {
-      if (r = d(e, a, n), r === u)
-        return t[o] = e, t[l] = a, f(t);
-      if (r > 0)
-        e = Math.floor(e / r) * r, a = Math.ceil(a / r) * r;
-      else if (r < 0)
-        e = Math.ceil(e * r) / r, a = Math.floor(a * r) / r;
-      else
-        break;
-      u = r;
+import { slice as F } from "./vue3-histogram-slider.esm61.js";
+import { bisectRight as j } from "./vue3-histogram-slider.esm54.js";
+import b from "./vue3-histogram-slider.esm62.js";
+import w from "./vue3-histogram-slider.esm60.js";
+import I from "./vue3-histogram-slider.esm63.js";
+import R from "./vue3-histogram-slider.esm64.js";
+import S, { tickIncrement as z } from "./vue3-histogram-slider.esm65.js";
+import q from "./vue3-histogram-slider.esm66.js";
+function L() {
+  var A = I, h = w, v = q;
+  function s(i) {
+    Array.isArray(i) || (i = Array.from(i));
+    var r, c = i.length, o, m, u = new Array(c);
+    for (r = 0; r < c; ++r)
+      u[r] = A(i[r], r, i);
+    var k = h(u), e = k[0], t = k[1], n = v(u, e, t);
+    if (!Array.isArray(n)) {
+      const g = t, x = +n;
+      if (h === w && ([e, t] = R(e, t, x)), n = S(e, t, x), n[0] <= e && (m = z(e, t, x)), n[n.length - 1] >= t)
+        if (g >= t && h === w) {
+          const l = z(e, t, x);
+          isFinite(l) && (l > 0 ? t = (Math.floor(t / l) + 1) * l : l < 0 && (t = (Math.ceil(t * -l) + 1) / -l));
+        } else
+          n.pop();
     }
-    return i;
-  }, i;
-}
-function g() {
-  var i = p();
-  return i.copy = function() {
-    return v(i, g());
-  }, c.apply(i, arguments), k(i);
+    for (var f = n.length, a = 0, p = f; n[a] <= e; ) ++a;
+    for (; n[p - 1] > t; ) --p;
+    (a || p < f) && (n = n.slice(a, p), f = p - a);
+    var y = new Array(f + 1), M;
+    for (r = 0; r <= f; ++r)
+      M = y[r] = [], M.x0 = r > 0 ? n[r - 1] : e, M.x1 = r < f ? n[r] : t;
+    if (isFinite(m)) {
+      if (m > 0)
+        for (r = 0; r < c; ++r)
+          (o = u[r]) != null && e <= o && o <= t && y[Math.min(f, Math.floor((o - e) / m))].push(i[r]);
+      else if (m < 0) {
+        for (r = 0; r < c; ++r)
+          if ((o = u[r]) != null && e <= o && o <= t) {
+            const g = Math.floor((e - o) * m);
+            y[Math.min(f, g + (n[g] <= o))].push(i[r]);
+          }
+      }
+    } else
+      for (r = 0; r < c; ++r)
+        (o = u[r]) != null && e <= o && o <= t && y[j(n, o, 0, f)].push(i[r]);
+    return y;
+  }
+  return s.value = function(i) {
+    return arguments.length ? (A = typeof i == "function" ? i : b(i), s) : A;
+  }, s.domain = function(i) {
+    return arguments.length ? (h = typeof i == "function" ? i : b([i[0], i[1]]), s) : h;
+  }, s.thresholds = function(i) {
+    return arguments.length ? (v = typeof i == "function" ? i : b(Array.isArray(i) ? F.call(i) : i), s) : v;
+  }, s;
 }
 export {
-  g as default,
-  k as linearish
+  L as default
 };
 //# sourceMappingURL=vue3-histogram-slider.esm10.js.map

@@ -1,8 +1,5 @@
-function i() {
-  this.nextSibling && this.parentNode.appendChild(this);
-}
-function e() {
-  return this.each(i);
+function e(t) {
+  return t;
 }
 export {
   e as default
