@@ -1,1 +1,0 @@
-{"version":3,"file":"vue3-histogram-slider.esm78.js","sources":["../node_modules/.pnpm/d3-scale@4.0.2/node_modules/d3-scale/src/number.js"],"sourcesContent":["export default function number(x) {\n  return +x;\n}\n"],"names":["number","x"],"mappings":"AAAe,SAASA,EAAOC,GAAG;AAChC,SAAO,CAACA;AACV;","x_google_ignoreList":[0]}

@@ -1,1 +1,0 @@
-{"version":3,"file":"vue3-histogram-slider.esm33.js","sources":["../node_modules/.pnpm/d3-selection@3.0.0/node_modules/d3-selection/src/selection/empty.js"],"sourcesContent":["export default function() {\n  return !this.node();\n}\n"],"names":["selection_empty"],"mappings":"AAAe,SAAAA,IAAW;AACxB,SAAO,CAAC,KAAK;AACf;","x_google_ignoreList":[0]}

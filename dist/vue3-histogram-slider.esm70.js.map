@@ -1,1 +1,0 @@
-{"version":3,"file":"vue3-histogram-slider.esm70.js","sources":["../node_modules/.pnpm/d3-array@3.2.4/node_modules/d3-array/src/array.js"],"sourcesContent":["var array = Array.prototype;\n\nexport var slice = array.slice;\nexport var map = array.map;\n"],"names":["array","slice"],"mappings":"AAAA,IAAIA,IAAQ,MAAM,WAEPC,IAAQD,EAAM;","x_google_ignoreList":[0]}

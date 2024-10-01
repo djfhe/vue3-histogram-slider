@@ -14,7 +14,7 @@
       :lazy="false"
       :process-style="processStyle"
       :tooltip-style="tooltipStyle"
-      :tooltip="'always'"
+      :tooltip="tooltip"
       :tooltip-placement="['bottom']"
       :tooltip-formatter="prettify"
     />
@@ -52,6 +52,7 @@ interface Props {
   processStyle?: Styles
   tooltipStyle?: Styles
   histSliderGap?: number 
+  tooltip?: 'none' | 'always' | 'focus' | 'hover' | 'active'
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -65,6 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
   grid: true,
   gridNum: 4,
   histSliderGap: 0,
+  tooltip: 'always',
   colors: () => [],
   prettify: (value: number) => value.toString(),
   labelStyle: () => ({
