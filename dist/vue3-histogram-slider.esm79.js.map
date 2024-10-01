@@ -1,0 +1,1 @@
+{"version":3,"file":"vue3-histogram-slider.esm79.js","sources":["../node_modules/.pnpm/d3-scale@4.0.2/node_modules/d3-scale/src/constant.js"],"sourcesContent":["export default function constants(x) {\n  return function() {\n    return x;\n  };\n}\n"],"names":["constants","x"],"mappings":"AAAe,SAASA,EAAUC,GAAG;AACnC,SAAO,WAAW;AAChB,WAAOA;AAAA,EACX;AACA;","x_google_ignoreList":[0]}

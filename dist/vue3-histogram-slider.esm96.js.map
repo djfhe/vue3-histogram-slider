@@ -1,0 +1,1 @@
+{"version":3,"file":"vue3-histogram-slider.esm96.js","sources":["../node_modules/.pnpm/d3-interpolate@3.0.1/node_modules/d3-interpolate/src/constant.js"],"sourcesContent":["export default x => () => x;\n"],"names":["constant","x"],"mappings":"AAAA,MAAeA,IAAA,CAAAC,MAAK,MAAMA;","x_google_ignoreList":[0]}

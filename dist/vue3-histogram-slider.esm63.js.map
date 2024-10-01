@@ -1,0 +1,1 @@
+{"version":3,"file":"vue3-histogram-slider.esm63.js","sources":["../node_modules/.pnpm/d3-array@3.2.4/node_modules/d3-array/src/identity.js"],"sourcesContent":["export default function identity(x) {\n  return x;\n}\n"],"names":["identity","x"],"mappings":"AAAe,SAASA,EAASC,GAAG;AAClC,SAAOA;AACT;","x_google_ignoreList":[0]}
